@@ -1,7 +1,7 @@
 <html lang="zh-CN"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-<title>HLG Meeting Analysis Dashboard</title>
+<title>HLG Meeting Analysis Dashboard - 麻将种类筛选版</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -206,6 +206,57 @@
     margin-top: 16px;
     margin-bottom: 8px;
   }
+  .type-filter-bar {
+    background: #f9f9f7;
+    padding: 12px 16px;
+    border-radius: 48px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid #e0e0e0;
+  }
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .filter-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f0f0;
+    padding: 6px 14px;
+    border-radius: 32px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .filter-check input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+  }
+  .filter-check.active-style {
+    background: #2e7d32;
+    color: white;
+  }
+  .filter-check.active-style input {
+    accent-color: white;
+  }
+  .filter-reset {
+    background: #e0e0e0;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 32px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+  }
   .rank-filter {
     display: flex;
     gap: 12px;
@@ -232,7 +283,6 @@
     color: white;
     box-shadow: 0 1px 4px rgba(0,0,0,0.2);
   }
-  /* 新模块样式 */
   .dice-area {
     background: #fef7e0;
     border-radius: 24px;
@@ -324,47 +374,84 @@
 </style>
 </head>
 <body>
-<nav id="dynamic-nav"><button data-tab="chooser" onclick="showTab('chooser')">🎲 是啊，打什么呢？</button><button data-tab="summary" onclick="showTab('summary')" class="">📊 总览</button><button data-tab="Jamie" onclick="showTab('Jamie')">👤 Jamie</button><button data-tab="米可儿" onclick="showTab('米可儿')">👤 米可儿</button><button data-tab="草采就是菜" onclick="showTab('草采就是菜')">👤 草采就是菜</button><button data-tab="。" onclick="showTab('。')">👤 。</button><button data-tab="Shirley" onclick="showTab('Shirley')">👤 Shirley</button><button data-tab="add" onclick="showTab('add')" class="active">➕ 添加对局</button><span class="nav-date">📅 数据快照 · 2026/5/17 00:20:55</span></nav>
-<div class="container" id="app-container"><div id="tab-chooser" class="tab-content" style="background:#fff7e8;">
-    <h2 style="text-align:center;">🎲 是啊，打什么呢？</h2>
-    <div class="card dice-area">
-      <div class="dice-icon" id="diceAnimateIcon">🎲</div>
-      <div style="text-align:center;"><button class="btn" id="rollDiceBtn" style="font-size: 1.2rem; padding: 10px 28px;">🎯 掷骰子</button></div>
-      <div id="diceResultArea" class="roll-result" style="min-width: 160px; text-align:center;">✨ 天意酝酿中 ✨</div>
-      <div class="tip" style="margin-top:12px">⏱️ 风从虎，云从龙，龙湖英雄傲苍穹！</div>
-    </div>
-    <div class="card" id="ruleDirectoryPanel"><h3>📖 规则目录 &amp; 建议</h3>
-      <div class="rule-preview">
-        <h3 style="margin-bottom: 8px;">🎋 川麻 规则书</h3>
-        <p><strong>📜 核心规则：</strong> 血战到底，缺一门方可胡牌，刮风下雨，查叫查花猪。</p>
-        <p><strong>🎯 建议玩法：</strong> 建议做大牌，防守查叫，注重换牌策略。</p>
-        <p><strong>💰 推荐大小：</strong> 底/分1 自摸加倍 换三张 呼叫转移杠 门清 断幺九 扫地胡 封顶无 8 局</p>
-      </div></div>
-  </div><div id="tab-summary" class="tab-content"><h2>🎯 HLG Meeting Analysis </h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">20</div><div class="stat-label">总对局数</div></div><div class="stat-card"><div class="stat-value">5</div><div class="stat-label">参与人数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">。</div><div class="stat-label">平均顺位第一</div></div></div><div class="card"><h3>🏆 综合排名（按平均顺位）</h3><div class="scroll-x"><table><thead><tr><th>排名</th><th>玩家</th><th>局数</th><th>平均顺位</th><th>一位率</th><th>二位率</th><th>三位率</th><th>四位率</th><th>总分</th></tr></thead><tbody><tr><td class="rank-1">1</td><td><strong>。</strong></td><td>17</td><td>1.94</td><td class="rank-1">35.3%</td><td class="rank-2">47.1%</td><td class="rank-3">5.9%</td><td class="rank-4">11.8%</td><td class="positive">+261</td></tr><tr><td class="rank-2">2</td><td><strong>草采就是菜</strong></td><td>20</td><td>2.05</td><td class="rank-1">40.0%</td><td class="rank-2">30.0%</td><td class="rank-3">15.0%</td><td class="rank-4">15.0%</td><td class="positive">+339</td></tr><tr><td class="rank-3">3</td><td><strong>米可儿</strong></td><td>16</td><td>2.75</td><td class="rank-1">12.5%</td><td class="rank-2">25.0%</td><td class="rank-3">37.5%</td><td class="rank-4">25.0%</td><td class="negative">-264</td></tr><tr><td class="rank-4">4</td><td><strong>Jamie</strong></td><td>16</td><td>2.88</td><td class="rank-1">18.8%</td><td class="rank-2">12.5%</td><td class="rank-3">31.3%</td><td class="rank-4">37.5%</td><td class="negative">-93</td></tr><tr><td class="rank-5">5</td><td><strong>Shirley</strong></td><td>11</td><td>3.18</td><td class="rank-1">9.1%</td><td class="rank-2">9.1%</td><td class="rank-3">36.4%</td><td class="rank-4">45.5%</td><td class="negative">-243</td></tr></tbody></table></div></div><div class="card"><h3>💰 总分排名</h3><div class="scroll-x"><table><thead><tr><th>排名</th><th>玩家</th><th>总分</th><th>平均得分</th></tr></thead><tbody><tr><td class="rank-1">1</td><td><strong>草采就是菜</strong></td><td class="positive">+339</td><td>+16.95</td></tr><tr><td class="rank-2">2</td><td><strong>。</strong></td><td class="positive">+261</td><td>+15.35</td></tr><tr><td class="rank-3">3</td><td><strong>Jamie</strong></td><td class="negative">-93</td><td>-5.81</td></tr><tr><td class="rank-4">4</td><td><strong>Shirley</strong></td><td class="negative">-243</td><td>-22.09</td></tr><tr><td class="rank-5">5</td><td><strong>米可儿</strong></td><td class="negative">-264</td><td>-16.50</td></tr></tbody></table></div></div><div class="card"><h3>⚔️ 相互战绩（胜-负，同场竞技）</h3><div class="scroll-x"><table><thead><tr><th></th><th>Jamie</th><th>米可儿</th><th>草采就是菜</th><th>。</th><th>Shirley</th></tr></thead><tbody><tr><th>Jamie</th><td style="background:#f5f5f5;">-</td><td><span class="h2h-win">5</span>-<span class="h2h-loss">7</span></td><td><span class="h2h-win">6</span>-<span class="h2h-loss">10</span></td><td><span class="h2h-win">4</span>-<span class="h2h-loss">9</span></td><td><span class="h2h-win">3</span>-<span class="h2h-loss">4</span></td></tr><tr><th>米可儿</th><td><span class="h2h-win">7</span>-<span class="h2h-loss">5</span></td><td style="background:#f5f5f5;">-</td><td><span class="h2h-win">5</span>-<span class="h2h-loss">11</span></td><td><span class="h2h-win">3</span>-<span class="h2h-loss">10</span></td><td><span class="h2h-win">4</span>-<span class="h2h-loss">3</span></td></tr><tr><th>草采就是菜</th><td><span class="h2h-win">10</span>-<span class="h2h-loss">6</span></td><td><span class="h2h-win">11</span>-<span class="h2h-loss">5</span></td><td style="background:#f5f5f5;">-</td><td><span class="h2h-win">8</span>-<span class="h2h-loss">9</span></td><td><span class="h2h-win">10</span>-<span class="h2h-loss">1</span></td></tr><tr><th>。</th><td><span class="h2h-win">9</span>-<span class="h2h-loss">4</span></td><td><span class="h2h-win">10</span>-<span class="h2h-loss">3</span></td><td><span class="h2h-win">9</span>-<span class="h2h-loss">8</span></td><td style="background:#f5f5f5;">-</td><td><span class="h2h-win">7</span>-<span class="h2h-loss">1</span></td></tr><tr><th>Shirley</th><td><span class="h2h-win">4</span>-<span class="h2h-loss">3</span></td><td><span class="h2h-win">3</span>-<span class="h2h-loss">4</span></td><td><span class="h2h-win">1</span>-<span class="h2h-loss">10</span></td><td><span class="h2h-win">1</span>-<span class="h2h-loss">7</span></td><td style="background:#f5f5f5;">-</td></tr></tbody></table></div></div><div class="card"><h3>📜 对局历史</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>Jamie</th><th>米可儿</th><th>草采就是菜</th><th>。</th><th>Shirley</th></tr></thead><tbody><tr><td>第1局</td><td style="white-space:nowrap;">2026-04-23 23:12:53</td><td><span class="rank-3">3位</span> <span class="positive">+2</span></td><td><span class="rank-1">1位</span> <span class="positive">+18</span></td><td><span class="rank-4">4位</span> <span class="negative">-33</span></td><td><span class="rank-2">2位</span> <span class="positive">+13</span></td><td style="color:#bbb;">-</td></tr><tr><td>第2局</td><td style="white-space:nowrap;">2026-04-29 13:09:47</td><td><span class="rank-4">4位</span> <span class="negative">-56</span></td><td style="color:#bbb;">-</td><td><span class="rank-2">2位</span> <span class="positive">+13</span></td><td><span class="rank-1">1位</span> <span class="positive">+75</span></td><td><span class="rank-3">3位</span> <span class="negative">-32</span></td></tr><tr><td>第3局</td><td style="white-space:nowrap;">2026-04-30 23:31:48</td><td><span class="rank-3">3位</span> <span class="negative">-13</span></td><td><span class="rank-2">2位</span> <span class="positive">+19</span></td><td><span class="rank-4">4位</span> <span class="negative">-28</span></td><td><span class="rank-1">1位</span> <span class="positive">+22</span></td><td style="color:#bbb;">-</td></tr><tr><td>第4局</td><td style="white-space:nowrap;">2026-05-01 00:00:00</td><td><span class="rank-4">4位</span> <span class="negative">-29</span></td><td><span class="rank-2">2位</span> <span class="positive">+9</span></td><td><span class="rank-2">2位</span> <span class="positive">+9</span></td><td><span class="rank-1">1位</span> <span class="positive">+11</span></td><td style="color:#bbb;">-</td></tr><tr><td>第5局</td><td style="white-space:nowrap;">2026-05-08 12:53:26</td><td style="color:#bbb;">-</td><td><span class="rank-3">3位</span> <span class="negative">-7</span></td><td><span class="rank-1">1位</span> <span class="positive">+58</span></td><td><span class="rank-2">2位</span> <span class="positive">+2</span></td><td><span class="rank-4">4位</span> <span class="negative">-53</span></td></tr><tr><td>第6局</td><td style="white-space:nowrap;">2026-05-08 13:24:58</td><td style="color:#bbb;">-</td><td><span class="rank-2">2位</span> <span class="positive">+3</span></td><td><span class="rank-1">1位</span> <span class="positive">+37</span></td><td><span class="rank-3">3位</span> <span class="negative">-2</span></td><td><span class="rank-4">4位</span> <span class="negative">-38</span></td></tr><tr><td>第7局</td><td style="white-space:nowrap;">2026-05-09 00:27:51</td><td><span class="rank-2">2位</span> <span class="negative">-3</span></td><td><span class="rank-1">1位</span> <span class="positive">+28</span></td><td><span class="rank-3">3位</span> <span class="negative">-6</span></td><td><span class="rank-4">4位</span> <span class="negative">-19</span></td><td style="color:#bbb;">-</td></tr><tr><td>第8局</td><td style="white-space:nowrap;">2026-05-09 13:14:49</td><td style="color:#bbb;">-</td><td><span class="rank-4">4位</span> <span class="negative">-95</span></td><td><span class="rank-1">1位</span> <span class="positive">+146</span></td><td><span class="rank-2">2位</span> <span class="negative">-20</span></td><td><span class="rank-3">3位</span> <span class="negative">-31</span></td></tr><tr><td>第9局</td><td style="white-space:nowrap;">2026-05-11 00:13:04</td><td><span class="rank-4">4位</span> <span class="negative">-49</span></td><td><span class="rank-2">2位</span> <span class="negative">-22</span></td><td><span class="rank-3">3位</span> <span class="negative">-29</span></td><td><span class="rank-1">1位</span> <span class="positive">+100</span></td><td style="color:#bbb;">-</td></tr><tr><td>第10局</td><td style="white-space:nowrap;">2026-05-12 23:53</td><td><span class="rank-3">3位</span> <span class="negative">-1</span></td><td><span class="rank-4">4位</span> <span class="negative">-56</span></td><td><span class="rank-1">1位</span> <span class="positive">+52</span></td><td><span class="rank-2">2位</span> <span class="positive">+5</span></td><td style="color:#bbb;">-</td></tr><tr><td>第11局</td><td style="white-space:nowrap;">2026-05-13 12:34</td><td><span class="rank-3">3位</span> <span class="negative">-23</span></td><td style="color:#bbb;">-</td><td><span class="rank-2">2位</span> <span class="negative">-3</span></td><td><span class="rank-4">4位</span> <span class="negative">-58</span></td><td><span class="rank-1">1位</span> <span class="positive">+84</span></td></tr><tr><td>第12局</td><td style="white-space:nowrap;">2026-05-13 13:05</td><td><span class="rank-1">1位</span> <span class="positive">+42</span></td><td style="color:#bbb;">-</td><td><span class="rank-3">3位</span> <span class="negative">-14</span></td><td><span class="rank-2">2位</span> <span class="negative">-4</span></td><td><span class="rank-4">4位</span> <span class="negative">-24</span></td></tr><tr><td>第13局</td><td style="white-space:nowrap;">2026-05-13 13:36</td><td><span class="rank-4">4位</span> <span class="negative">-35</span></td><td style="color:#bbb;">-</td><td><span class="rank-1">1位</span> <span class="positive">+38</span></td><td><span class="rank-2">2位</span> <span class="positive">+10</span></td><td><span class="rank-3">3位</span> <span class="negative">-13</span></td></tr><tr><td>第14局</td><td style="white-space:nowrap;">2026-05-14 14:39</td><td><span class="rank-1">1位</span> <span class="positive">+101</span></td><td><span class="rank-3">3位</span> <span class="negative">-44</span></td><td><span class="rank-2">2位</span> <span class="positive">+17</span></td><td style="color:#bbb;">-</td><td><span class="rank-4">4位</span> <span class="negative">-74</span></td></tr><tr><td>第15局</td><td style="white-space:nowrap;">2026-05-14 14:45</td><td><span class="rank-4">4位</span> <span class="negative">-52</span></td><td><span class="rank-3">3位</span> <span class="negative">-26</span></td><td><span class="rank-1">1位</span> <span class="positive">+68</span></td><td style="color:#bbb;">-</td><td><span class="rank-2">2位</span> <span class="positive">+10</span></td></tr><tr><td>第16局</td><td style="white-space:nowrap;">2026-05-15 00:00</td><td style="color:#bbb;">-</td><td><span class="rank-3">3位</span> <span class="negative">-12</span></td><td><span class="rank-2">2位</span> <span class="negative">-6</span></td><td><span class="rank-1">1位</span> <span class="positive">+87</span></td><td><span class="rank-4">4位</span> <span class="negative">-69</span></td></tr><tr><td>第17局</td><td style="white-space:nowrap;">2026-05-15 14:12</td><td><span class="rank-1">1位</span> <span class="positive">+22</span></td><td><span class="rank-3">3位</span> <span class="negative">-5</span></td><td><span class="rank-4">4位</span> <span class="negative">-31</span></td><td><span class="rank-2">2位</span> <span class="positive">+14</span></td><td style="color:#bbb;">-</td></tr><tr><td>第18局</td><td style="white-space:nowrap;">2026-05-15 14:12</td><td><span class="rank-3">3位</span> <span class="negative">-4</span></td><td><span class="rank-4">4位</span> <span class="negative">-24</span></td><td><span class="rank-2">2位</span> <span class="positive">+3</span></td><td><span class="rank-1">1位</span> <span class="positive">+25</span></td><td style="color:#bbb;">-</td></tr><tr><td>第19局</td><td style="white-space:nowrap;">2026-05-15 18:20</td><td><span class="rank-2">2位</span> <span class="positive">+11</span></td><td><span class="rank-4">4位</span> <span class="negative">-48</span></td><td><span class="rank-1">1位</span> <span class="positive">+40</span></td><td style="color:#bbb;">-</td><td><span class="rank-3">3位</span> <span class="negative">-3</span></td></tr><tr><td>第20局</td><td style="white-space:nowrap;">2026-05-17 00:20</td><td><span class="rank-4">4位</span> <span class="negative">-6</span></td><td><span class="rank-3">3位</span> <span class="negative">-2</span></td><td><span class="rank-1">1位</span> <span class="positive">+8</span></td><td><span class="rank-2">2位</span> <span class="positive">0</span></td><td style="color:#bbb;">-</td></tr></tbody></table></div></div></div><div id="tab-Jamie" class="tab-content" style="background:#f5f0eb"><h2>Jamie 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">18.8%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">12.5%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">31.3%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">37.5%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">16</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">-5.81</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">2.88</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter"><span>📊 显示场次：</span><button class="filter-btn active-filter" data-player="Jamie" data-limit="10">最近10战</button><button class="filter-btn" data-player="Jamie" data-limit="20">最近20战</button><button class="filter-btn" data-player="Jamie" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart_Jamie" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart_Jamie" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>第1局</td><td>2026-04-23 23:12:53</td><td class="positive">+2</td><td class="rank-3">3位</td></tr><tr><td>第2局</td><td>2026-04-29 13:09:47</td><td class="negative">-56</td><td class="rank-4">4位</td></tr><tr><td>第3局</td><td>2026-04-30 23:31:48</td><td class="negative">-13</td><td class="rank-3">3位</td></tr><tr><td>第4局</td><td>2026-05-01 00:00:00</td><td class="negative">-29</td><td class="rank-4">4位</td></tr><tr><td>第7局</td><td>2026-05-09 00:27:51</td><td class="negative">-3</td><td class="rank-2">2位</td></tr><tr><td>第9局</td><td>2026-05-11 00:13:04</td><td class="negative">-49</td><td class="rank-4">4位</td></tr><tr><td>第10局</td><td>2026-05-12 23:53</td><td class="negative">-1</td><td class="rank-3">3位</td></tr><tr><td>第11局</td><td>2026-05-13 12:34</td><td class="negative">-23</td><td class="rank-3">3位</td></tr><tr><td>第12局</td><td>2026-05-13 13:05</td><td class="positive">+42</td><td class="rank-1">1位</td></tr><tr><td>第13局</td><td>2026-05-13 13:36</td><td class="negative">-35</td><td class="rank-4">4位</td></tr><tr><td>第14局</td><td>2026-05-14 14:39</td><td class="positive">+101 <span class="crown">👑</span></td><td class="rank-1">1位</td></tr><tr><td>第15局</td><td>2026-05-14 14:45</td><td class="negative">-52</td><td class="rank-4">4位</td></tr><tr><td>第17局</td><td>2026-05-15 14:12</td><td class="positive">+22</td><td class="rank-1">1位</td></tr><tr><td>第18局</td><td>2026-05-15 14:12</td><td class="negative">-4</td><td class="rank-3">3位</td></tr><tr><td>第19局</td><td>2026-05-15 18:20</td><td class="positive">+11</td><td class="rank-2">2位</td></tr><tr><td>第20局</td><td>2026-05-17 00:20</td><td class="negative">-6</td><td class="rank-4">4位</td></tr></tbody></table></div></div></div><div id="tab-_E7_B1_B3_E5_8F_AF_E5_84_BF" class="tab-content" style="background:#e8ede6"><h2>米可儿 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">12.5%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">25.0%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">37.5%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">25.0%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">16</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">-16.50</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">2.75</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter"><span>📊 显示场次：</span><button class="filter-btn active-filter" data-player="米可儿" data-limit="10">最近10战</button><button class="filter-btn" data-player="米可儿" data-limit="20">最近20战</button><button class="filter-btn" data-player="米可儿" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart__E7_B1_B3_E5_8F_AF_E5_84_BF" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart__E7_B1_B3_E5_8F_AF_E5_84_BF" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>第1局</td><td>2026-04-23 23:12:53</td><td class="positive">+18</td><td class="rank-1">1位</td></tr><tr><td>第3局</td><td>2026-04-30 23:31:48</td><td class="positive">+19</td><td class="rank-2">2位</td></tr><tr><td>第4局</td><td>2026-05-01 00:00:00</td><td class="positive">+9</td><td class="rank-2">2位</td></tr><tr><td>第5局</td><td>2026-05-08 12:53:26</td><td class="negative">-7</td><td class="rank-3">3位</td></tr><tr><td>第6局</td><td>2026-05-08 13:24:58</td><td class="positive">+3</td><td class="rank-2">2位</td></tr><tr><td>第7局</td><td>2026-05-09 00:27:51</td><td class="positive">+28</td><td class="rank-1">1位</td></tr><tr><td>第8局</td><td>2026-05-09 13:14:49</td><td class="negative">-95</td><td class="rank-4">4位</td></tr><tr><td>第9局</td><td>2026-05-11 00:13:04</td><td class="negative">-22</td><td class="rank-2">2位</td></tr><tr><td>第10局</td><td>2026-05-12 23:53</td><td class="negative">-56</td><td class="rank-4">4位</td></tr><tr><td>第14局</td><td>2026-05-14 14:39</td><td class="negative">-44</td><td class="rank-3">3位</td></tr><tr><td>第15局</td><td>2026-05-14 14:45</td><td class="negative">-26</td><td class="rank-3">3位</td></tr><tr><td>第16局</td><td>2026-05-15 00:00</td><td class="negative">-12</td><td class="rank-3">3位</td></tr><tr><td>第17局</td><td>2026-05-15 14:12</td><td class="negative">-5</td><td class="rank-3">3位</td></tr><tr><td>第18局</td><td>2026-05-15 14:12</td><td class="negative">-24</td><td class="rank-4">4位</td></tr><tr><td>第19局</td><td>2026-05-15 18:20</td><td class="negative">-48</td><td class="rank-4">4位</td></tr><tr><td>第20局</td><td>2026-05-17 00:20</td><td class="negative">-2</td><td class="rank-3">3位</td></tr></tbody></table></div></div></div><div id="tab-_E8_8D_89_E9_87_87_E5_B0_B1_E6_98_AF_E8_8F_9C" class="tab-content" style="background:#ede6dc"><h2>草采就是菜 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">40.0%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">30.0%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">15.0%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">15.0%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">20</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">+16.95</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">2.05</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter"><span>📊 显示场次：</span><button class="filter-btn active-filter" data-player="草采就是菜" data-limit="10">最近10战</button><button class="filter-btn" data-player="草采就是菜" data-limit="20">最近20战</button><button class="filter-btn" data-player="草采就是菜" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart__E8_8D_89_E9_87_87_E5_B0_B1_E6_98_AF_E8_8F_9C" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart__E8_8D_89_E9_87_87_E5_B0_B1_E6_98_AF_E8_8F_9C" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>第1局</td><td>2026-04-23 23:12:53</td><td class="negative">-33</td><td class="rank-4">4位</td></tr><tr><td>第2局</td><td>2026-04-29 13:09:47</td><td class="positive">+13</td><td class="rank-2">2位</td></tr><tr><td>第3局</td><td>2026-04-30 23:31:48</td><td class="negative">-28</td><td class="rank-4">4位</td></tr><tr><td>第4局</td><td>2026-05-01 00:00:00</td><td class="positive">+9</td><td class="rank-2">2位</td></tr><tr><td>第5局</td><td>2026-05-08 12:53:26</td><td class="positive">+58</td><td class="rank-1">1位</td></tr><tr><td>第6局</td><td>2026-05-08 13:24:58</td><td class="positive">+37</td><td class="rank-1">1位</td></tr><tr><td>第7局</td><td>2026-05-09 00:27:51</td><td class="negative">-6</td><td class="rank-3">3位</td></tr><tr><td>第8局</td><td>2026-05-09 13:14:49</td><td class="positive">+146 <span class="crown">👑</span></td><td class="rank-1">1位</td></tr><tr><td>第9局</td><td>2026-05-11 00:13:04</td><td class="negative">-29</td><td class="rank-3">3位</td></tr><tr><td>第10局</td><td>2026-05-12 23:53</td><td class="positive">+52</td><td class="rank-1">1位</td></tr><tr><td>第11局</td><td>2026-05-13 12:34</td><td class="negative">-3</td><td class="rank-2">2位</td></tr><tr><td>第12局</td><td>2026-05-13 13:05</td><td class="negative">-14</td><td class="rank-3">3位</td></tr><tr><td>第13局</td><td>2026-05-13 13:36</td><td class="positive">+38</td><td class="rank-1">1位</td></tr><tr><td>第14局</td><td>2026-05-14 14:39</td><td class="positive">+17</td><td class="rank-2">2位</td></tr><tr><td>第15局</td><td>2026-05-14 14:45</td><td class="positive">+68</td><td class="rank-1">1位</td></tr><tr><td>第16局</td><td>2026-05-15 00:00</td><td class="negative">-6</td><td class="rank-2">2位</td></tr><tr><td>第17局</td><td>2026-05-15 14:12</td><td class="negative">-31</td><td class="rank-4">4位</td></tr><tr><td>第18局</td><td>2026-05-15 14:12</td><td class="positive">+3</td><td class="rank-2">2位</td></tr><tr><td>第19局</td><td>2026-05-15 18:20</td><td class="positive">+40</td><td class="rank-1">1位</td></tr><tr><td>第20局</td><td>2026-05-17 00:20</td><td class="positive">+8</td><td class="rank-1">1位</td></tr></tbody></table></div></div></div><div id="tab-_E3_80_82" class="tab-content" style="background:#e2e8f0"><h2>。 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">35.3%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">47.1%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">5.9%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">11.8%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">17</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">+15.35</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">1.94</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter"><span>📊 显示场次：</span><button class="filter-btn active-filter" data-player="。" data-limit="10">最近10战</button><button class="filter-btn" data-player="。" data-limit="20">最近20战</button><button class="filter-btn" data-player="。" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart__E3_80_82" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart__E3_80_82" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>第1局</td><td>2026-04-23 23:12:53</td><td class="positive">+13</td><td class="rank-2">2位</td></tr><tr><td>第2局</td><td>2026-04-29 13:09:47</td><td class="positive">+75</td><td class="rank-1">1位</td></tr><tr><td>第3局</td><td>2026-04-30 23:31:48</td><td class="positive">+22</td><td class="rank-1">1位</td></tr><tr><td>第4局</td><td>2026-05-01 00:00:00</td><td class="positive">+11</td><td class="rank-1">1位</td></tr><tr><td>第5局</td><td>2026-05-08 12:53:26</td><td class="positive">+2</td><td class="rank-2">2位</td></tr><tr><td>第6局</td><td>2026-05-08 13:24:58</td><td class="negative">-2</td><td class="rank-3">3位</td></tr><tr><td>第7局</td><td>2026-05-09 00:27:51</td><td class="negative">-19</td><td class="rank-4">4位</td></tr><tr><td>第8局</td><td>2026-05-09 13:14:49</td><td class="negative">-20</td><td class="rank-2">2位</td></tr><tr><td>第9局</td><td>2026-05-11 00:13:04</td><td class="positive">+100</td><td class="rank-1">1位</td></tr><tr><td>第10局</td><td>2026-05-12 23:53</td><td class="positive">+5</td><td class="rank-2">2位</td></tr><tr><td>第11局</td><td>2026-05-13 12:34</td><td class="negative">-58</td><td class="rank-4">4位</td></tr><tr><td>第12局</td><td>2026-05-13 13:05</td><td class="negative">-4</td><td class="rank-2">2位</td></tr><tr><td>第13局</td><td>2026-05-13 13:36</td><td class="positive">+10</td><td class="rank-2">2位</td></tr><tr><td>第16局</td><td>2026-05-15 00:00</td><td class="positive">+87</td><td class="rank-1">1位</td></tr><tr><td>第17局</td><td>2026-05-15 14:12</td><td class="positive">+14</td><td class="rank-2">2位</td></tr><tr><td>第18局</td><td>2026-05-15 14:12</td><td class="positive">+25</td><td class="rank-1">1位</td></tr><tr><td>第20局</td><td>2026-05-17 00:20</td><td class="positive">0</td><td class="rank-2">2位</td></tr></tbody></table></div></div></div><div id="tab-Shirley" class="tab-content" style="background:#f0e6ec"><h2>Shirley 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">9.1%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">9.1%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">36.4%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">45.5%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">11</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">-22.09</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">3.18</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter"><span>📊 显示场次：</span><button class="filter-btn active-filter" data-player="Shirley" data-limit="10">最近10战</button><button class="filter-btn" data-player="Shirley" data-limit="20">最近20战</button><button class="filter-btn" data-player="Shirley" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart_Shirley" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart_Shirley" style="width: 0px; height: 0px; display: block; box-sizing: border-box;" height="0" width="0"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>第2局</td><td>2026-04-29 13:09:47</td><td class="negative">-32</td><td class="rank-3">3位</td></tr><tr><td>第5局</td><td>2026-05-08 12:53:26</td><td class="negative">-53</td><td class="rank-4">4位</td></tr><tr><td>第6局</td><td>2026-05-08 13:24:58</td><td class="negative">-38</td><td class="rank-4">4位</td></tr><tr><td>第8局</td><td>2026-05-09 13:14:49</td><td class="negative">-31</td><td class="rank-3">3位</td></tr><tr><td>第11局</td><td>2026-05-13 12:34</td><td class="positive">+84</td><td class="rank-1">1位</td></tr><tr><td>第12局</td><td>2026-05-13 13:05</td><td class="negative">-24</td><td class="rank-4">4位</td></tr><tr><td>第13局</td><td>2026-05-13 13:36</td><td class="negative">-13</td><td class="rank-3">3位</td></tr><tr><td>第14局</td><td>2026-05-14 14:39</td><td class="negative">-74</td><td class="rank-4">4位</td></tr><tr><td>第15局</td><td>2026-05-14 14:45</td><td class="positive">+10</td><td class="rank-2">2位</td></tr><tr><td>第16局</td><td>2026-05-15 00:00</td><td class="negative">-69</td><td class="rank-4">4位</td></tr><tr><td>第19局</td><td>2026-05-15 18:20</td><td class="negative">-3</td><td class="rank-3">3位</td></tr></tbody></table></div></div></div><div id="tab-add" class="tab-content active"><h2>➕ 添加新对局 &amp; 💾 备份快照</h2><div class="card"><div class="input-group"><label>📅 对局日期时间</label><input type="datetime-local" id="game-date"></div><h3 style="margin-top:16px;margin-bottom:12px;">🀄 玩家得分 (四人局)</h3><div class="form-row"><div class="input-group"><label>玩家1 姓名</label><select id="player-1-name"><option value="">请选择</option><option value="Jamie">Jamie</option><option value="米可儿">米可儿</option><option value="草采就是菜">草采就是菜</option><option value="。">。</option><option value="Shirley">Shirley</option><option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家1 得分</label><input type="number" id="player-1-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-1-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-1-name" placeholder="输入新玩家昵称"></div><div class="form-row"><div class="input-group"><label>玩家2 姓名</label><select id="player-2-name"><option value="">请选择</option><option value="Jamie">Jamie</option><option value="米可儿">米可儿</option><option value="草采就是菜">草采就是菜</option><option value="。">。</option><option value="Shirley">Shirley</option><option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家2 得分</label><input type="number" id="player-2-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-2-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-2-name" placeholder="输入新玩家昵称"></div><div class="form-row"><div class="input-group"><label>玩家3 姓名</label><select id="player-3-name"><option value="">请选择</option><option value="Jamie">Jamie</option><option value="米可儿">米可儿</option><option value="草采就是菜">草采就是菜</option><option value="。">。</option><option value="Shirley">Shirley</option><option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家3 得分</label><input type="number" id="player-3-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-3-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-3-name" placeholder="输入新玩家昵称"></div><div class="form-row"><div class="input-group"><label>玩家4 姓名</label><select id="player-4-name"><option value="">请选择</option><option value="Jamie">Jamie</option><option value="米可儿">米可儿</option><option value="草采就是菜">草采就是菜</option><option value="。">。</option><option value="Shirley">Shirley</option><option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家4 得分</label><input type="number" id="player-4-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-4-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-4-name" placeholder="输入新玩家昵称"></div><div style="margin-top:16px;"><button class="btn" onclick="window.addGame()">✅ 添加对局</button></div></div><div class="card"><h3>💾 数据持久化 &amp; 自动保存</h3><div class="tip">✨ 新增对局后，点击下方「💾 一键保存为HTML快照」即可将当前所有数据导出。</div><div class="action-buttons"><button class="btn" onclick="window.exportData()">📤 导出 JSON</button><button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 导入 JSON</button><button class="btn btn-save" onclick="window.saveAsHtmlSnapshot()">💾 一键保存为HTML快照</button></div><input type="file" id="import-file" accept=".json" style="display:none;" onchange="window.importData(this)"></div><div class="card" id="mahjong-type-manager-container"><h3>📚 可配置麻将种类库 <span style="font-size:14px;">(增删改即影响骰子池)</span></h3>
-    <div class="type-list" id="mahjongTypeList"><div class="type-item">
-      <span class="type-name">🀄️ 川麻</span>
-      <div class="type-actions">
-        <button class="edit-btn" data-edit-idx="0">✏️ 编辑</button>
-        <button class="del-btn" data-del-idx="0">🗑️ 删除</button>
-      </div>
-    </div><div class="type-item">
-      <span class="type-name">🀄️ 敲麻</span>
-      <div class="type-actions">
-        <button class="edit-btn" data-edit-idx="1">✏️ 编辑</button>
-        <button class="del-btn" data-del-idx="1">🗑️ 删除</button>
-      </div>
-    </div></div>
-    <div class="add-type-form">
-      <h4>➕ 新增麻将种类</h4>
-      <div class="form-row" style="grid-template-columns:1fr 1fr;"><div class="input-group"><label>种类名</label><input type="text" id="newTypeName" placeholder="例: 广东麻将"></div><div class="input-group"><label>建议大小(底/番)</label><input type="text" id="newTypeStake" placeholder="例: 小注10元 大注30元"></div></div>
-      <div class="input-group"><label>核心规则</label><textarea id="newTypeRules" rows="2" placeholder="详细规则描述"></textarea></div>
-      <div class="input-group"><label>建议玩法</label><textarea id="newTypeSuggestion" rows="2" placeholder="玩法/技巧/策略"></textarea></div>
-      <button class="btn" id="addMahjongTypeBtn" style="margin-top:6px">✅ 添加种类</button>
-    </div></div></div></div>
-<footer style="text-align:center;padding:16px;color:#888;font-size:13px;">© 2026 HLG Meeting Analysis · 由第一名玩家倾情制作呈现</footer>
+<nav id="dynamic-nav"><button data-tab="chooser" onclick="showTab('chooser')" class="">🎲 是啊，打什么呢？</button><button data-tab="summary" onclick="showTab('summary')" class="">📊 总览</button><button data-tab="Jamie" onclick="showTab('Jamie')" class="">👤 Jamie</button><button data-tab="米可儿" onclick="showTab('米可儿')" class="">👤 米可儿</button><button data-tab="草采就是菜" onclick="showTab('草采就是菜')">👤 草采就是菜</button><button data-tab="。" onclick="showTab('。')" class="">👤 。</button><button data-tab="Shirley" onclick="showTab('Shirley')">👤 Shirley</button><button data-tab="add" onclick="showTab('add')" class="active">➕ 添加对局</button><span class="nav-date">📅 数据快照 · 2026/5/17 19:47:41</span></nav>
+<div class="container" id="app-container"><div id="tab-chooser" class="tab-content"><h2 style="text-align:center;">🎲 是啊，打什么呢？</h2><div class="card dice-area"><div class="dice-icon" id="diceAnimateIcon">🎲</div><div style="text-align:center;"><button class="btn" id="rollDiceBtn" style="font-size: 1.2rem; padding: 10px 28px;">🎯 掷骰子</button></div><div id="diceResultArea" class="roll-result" style="min-width: 160px; text-align:center;">✨ 天意酝酿中 ✨</div><div class="tip" style="margin-top:12px">⏱️ 风从虎，云从龙，龙湖英雄傲苍穹！</div></div><div class="card" id="ruleDirectoryPanel"><h3>📖 规则目录 &amp; 建议</h3><div class="rule-preview"><h3 style="margin-bottom: 8px;">🎋 日麻 规则书</h3><p><strong>📜 核心规则：</strong> 自定义规则</p><p><strong>🎯 建议玩法：</strong> 自由发挥</p><p><strong>💰 推荐大小：</strong> 未设置</p></div></div></div><div id="tab-summary" class="tab-content"><div id="summary-filter-container"><div class="type-filter-bar"><span style="font-weight:600;">🎲 麻将种类筛选 (多选):</span><div class="filter-group"><label class="filter-check" style="background:#2e7d32; color:white">
+              <input type="checkbox" value="川麻" checked=""> 川麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="敲麻"> 敲麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="烟麻"> 烟麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="日麻"> 日麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="友谊赛"> 友谊赛
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="线下赛"> 线下赛
+            </label><button class="filter-reset" id="resetTypeFilterBtn">全选所有种类</button></div></div></div><h2>🎯 HLG Meeting Highlights</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">14</div><div class="stat-label">筛选对局数</div></div><div class="stat-card"><div class="stat-value">5</div><div class="stat-label">参与人数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">。</div><div class="stat-label">平均顺位第一</div></div></div><div class="card"><h3>🏆 综合排名（按平均顺位）</h3><div class="scroll-x"><table><thead><tr><th>排名</th><th>玩家</th><th>局数</th><th>平均顺位</th><th>一位率</th><th>二位率</th><th>三位率</th><th>四位率</th><th>总分</th></tr></thead><tbody><tr><td class="rank-1">1</td><td><strong>。</strong></td><td>12</td><td>1.67</td><td class="rank-1">41.7%</td><td class="rank-2">50.0%</td><td class="rank-3">8.3%</td><td class="rank-4">0.0%</td><td class="positive">+270</td></tr><tr><td class="rank-2">2</td><td><strong>草采就是菜</strong></td><td>14</td><td>1.93</td><td class="rank-1">50.0%</td><td class="rank-2">21.4%</td><td class="rank-3">14.3%</td><td class="rank-4">14.3%</td><td class="positive">+205</td></tr><tr><td class="rank-3">3</td><td><strong>米可儿</strong></td><td>12</td><td>2.92</td><td class="rank-1">0.0%</td><td class="rank-2">33.3%</td><td class="rank-3">41.7%</td><td class="rank-4">25.0%</td><td class="negative">-171</td></tr><tr><td class="rank-4">4</td><td><strong>Jamie</strong></td><td>11</td><td>3.00</td><td class="rank-1">18.2%</td><td class="rank-2">9.1%</td><td class="rank-3">27.3%</td><td class="rank-4">45.5%</td><td class="negative">-114</td></tr><tr><td class="rank-5">5</td><td><strong>Shirley</strong></td><td>7</td><td>3.43</td><td class="rank-1">0.0%</td><td class="rank-2">14.3%</td><td class="rank-3">28.6%</td><td class="rank-4">57.1%</td><td class="negative">-190</td></tr></tbody></table></div></div><div class="card"><h3>💰 总分排名</h3><div class="scroll-x"><table><thead><tr><th>排名</th><th>玩家</th><th>总分</th><th>平均得分</th></tr></thead><tbody><tr><td class="rank-1">1</td><td><strong>。</strong></td><td class="positive">+270</td><td>+22.50</td></tr><tr><td class="rank-2">2</td><td><strong>草采就是菜</strong></td><td class="positive">+205</td><td>+14.64</td></tr><tr><td class="rank-3">3</td><td><strong>Jamie</strong></td><td class="negative">-114</td><td>-10.36</td></tr><tr><td class="rank-4">4</td><td><strong>米可儿</strong></td><td class="negative">-171</td><td>-14.25</td></tr><tr><td class="rank-5">5</td><td><strong>Shirley</strong></td><td class="negative">-190</td><td>-27.14</td></tr></tbody></table></div></div><div class="card"><h3>⚔️ 相互战绩（胜-负，同场竞技）</h3><div class="scroll-x"><table><thead><tr><th></th><th>。</th><th>草采就是菜</th><th>Jamie</th><th>米可儿</th><th>Shirley</th></tr></thead><tbody><tr><th>。</th><td style="background:#f5f5f5;">-</td><td><span class="h2h-win">7</span>-<span class="h2h-loss">5</span></td><td><span class="h2h-win">7</span>-<span class="h2h-loss">2</span></td><td><span class="h2h-win">9</span>-<span class="h2h-loss">1</span></td><td><span class="h2h-win">5</span>-<span class="h2h-loss">0</span></td></tr><tr><th>草采就是菜</th><td><span class="h2h-win">5</span>-<span class="h2h-loss">7</span></td><td style="background:#f5f5f5;">-</td><td><span class="h2h-win">8</span>-<span class="h2h-loss">3</span></td><td><span class="h2h-win">9</span>-<span class="h2h-loss">3</span></td><td><span class="h2h-win">7</span>-<span class="h2h-loss">0</span></td></tr><tr><th>Jamie</th><td><span class="h2h-win">2</span>-<span class="h2h-loss">7</span></td><td><span class="h2h-win">3</span>-<span class="h2h-loss">8</span></td><td style="background:#f5f5f5;">-</td><td><span class="h2h-win">4</span>-<span class="h2h-loss">5</span></td><td><span class="h2h-win">2</span>-<span class="h2h-loss">2</span></td></tr><tr><th>米可儿</th><td><span class="h2h-win">1</span>-<span class="h2h-loss">9</span></td><td><span class="h2h-win">3</span>-<span class="h2h-loss">9</span></td><td><span class="h2h-win">5</span>-<span class="h2h-loss">4</span></td><td style="background:#f5f5f5;">-</td><td><span class="h2h-win">3</span>-<span class="h2h-loss">2</span></td></tr><tr><th>Shirley</th><td><span class="h2h-win">0</span>-<span class="h2h-loss">5</span></td><td><span class="h2h-win">0</span>-<span class="h2h-loss">7</span></td><td><span class="h2h-win">2</span>-<span class="h2h-loss">2</span></td><td><span class="h2h-win">2</span>-<span class="h2h-loss">3</span></td><td style="background:#f5f5f5;">-</td></tr></tbody></table></div></div><div class="card"><h3>📜 对局历史</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>麻将类型</th><th>。</th><th>草采就是菜</th><th>Jamie</th><th>米可儿</th><th>Shirley</th> </tr></thead><tbody><tr><td>1</td><td style="white-space:nowrap;">2026-04-30 23:31:48</td><td>川麻</td><td><span class="rank-1">1位</span> <span class="positive">+22</span></td><td><span class="rank-4">4位</span> <span class="negative">-28</span></td><td><span class="rank-3">3位</span> <span class="negative">-13</span></td><td><span class="rank-2">2位</span> <span class="positive">+19</span></td><td style="color:#bbb;">-</td></tr><tr><td>2</td><td style="white-space:nowrap;">2026-05-01 00:00:00</td><td>川麻</td><td><span class="rank-1">1位</span> <span class="positive">+11</span></td><td><span class="rank-2">2位</span> <span class="positive">+9</span></td><td><span class="rank-4">4位</span> <span class="negative">-29</span></td><td><span class="rank-2">2位</span> <span class="positive">+9</span></td><td style="color:#bbb;">-</td></tr><tr><td>3</td><td style="white-space:nowrap;">2026-05-08 12:53:26</td><td>川麻</td><td><span class="rank-2">2位</span> <span class="positive">+2</span></td><td><span class="rank-1">1位</span> <span class="positive">+58</span></td><td style="color:#bbb;">-</td><td><span class="rank-3">3位</span> <span class="negative">-7</span></td><td><span class="rank-4">4位</span> <span class="negative">-53</span></td></tr><tr><td>4</td><td style="white-space:nowrap;">2026-05-08 13:24:58</td><td>川麻</td><td><span class="rank-3">3位</span> <span class="negative">-2</span></td><td><span class="rank-1">1位</span> <span class="positive">+37</span></td><td style="color:#bbb;">-</td><td><span class="rank-2">2位</span> <span class="positive">+3</span></td><td><span class="rank-4">4位</span> <span class="negative">-38</span></td></tr><tr><td>5</td><td style="white-space:nowrap;">2026-05-11 00:13:04</td><td>川麻</td><td><span class="rank-1">1位</span> <span class="positive">+100</span></td><td><span class="rank-3">3位</span> <span class="negative">-29</span></td><td><span class="rank-4">4位</span> <span class="negative">-49</span></td><td><span class="rank-2">2位</span> <span class="negative">-22</span></td><td style="color:#bbb;">-</td></tr><tr><td>6</td><td style="white-space:nowrap;">2026-05-12 23:53</td><td>川麻</td><td><span class="rank-2">2位</span> <span class="positive">+5</span></td><td><span class="rank-1">1位</span> <span class="positive">+52</span></td><td><span class="rank-3">3位</span> <span class="negative">-1</span></td><td><span class="rank-4">4位</span> <span class="negative">-56</span></td><td style="color:#bbb;">-</td></tr><tr><td>7</td><td style="white-space:nowrap;">2026-05-13 13:05</td><td>川麻</td><td><span class="rank-2">2位</span> <span class="negative">-4</span></td><td><span class="rank-3">3位</span> <span class="negative">-14</span></td><td><span class="rank-1">1位</span> <span class="positive">+42</span></td><td style="color:#bbb;">-</td><td><span class="rank-4">4位</span> <span class="negative">-24</span></td></tr><tr><td>8</td><td style="white-space:nowrap;">2026-05-13 13:36</td><td>川麻</td><td><span class="rank-2">2位</span> <span class="positive">+10</span></td><td><span class="rank-1">1位</span> <span class="positive">+38</span></td><td><span class="rank-4">4位</span> <span class="negative">-35</span></td><td style="color:#bbb;">-</td><td><span class="rank-3">3位</span> <span class="negative">-13</span></td></tr><tr><td>9</td><td style="white-space:nowrap;">2026-05-14 14:45</td><td>川麻</td><td style="color:#bbb;">-</td><td><span class="rank-1">1位</span> <span class="positive">+68</span></td><td><span class="rank-4">4位</span> <span class="negative">-52</span></td><td><span class="rank-3">3位</span> <span class="negative">-26</span></td><td><span class="rank-2">2位</span> <span class="positive">+10</span></td></tr><tr><td>10</td><td style="white-space:nowrap;">2026-05-15 00:00</td><td>川麻</td><td><span class="rank-1">1位</span> <span class="positive">+87</span></td><td><span class="rank-2">2位</span> <span class="negative">-6</span></td><td style="color:#bbb;">-</td><td><span class="rank-3">3位</span> <span class="negative">-12</span></td><td><span class="rank-4">4位</span> <span class="negative">-69</span></td></tr><tr><td>11</td><td style="white-space:nowrap;">2026-05-15 14:12</td><td>川麻</td><td><span class="rank-2">2位</span> <span class="positive">+14</span></td><td><span class="rank-4">4位</span> <span class="negative">-31</span></td><td><span class="rank-1">1位</span> <span class="positive">+22</span></td><td><span class="rank-3">3位</span> <span class="negative">-5</span></td><td style="color:#bbb;">-</td></tr><tr><td>12</td><td style="white-space:nowrap;">2026-05-15 14:12</td><td>川麻</td><td><span class="rank-1">1位</span> <span class="positive">+25</span></td><td><span class="rank-2">2位</span> <span class="positive">+3</span></td><td><span class="rank-3">3位</span> <span class="negative">-4</span></td><td><span class="rank-4">4位</span> <span class="negative">-24</span></td><td style="color:#bbb;">-</td></tr><tr><td>13</td><td style="white-space:nowrap;">2026-05-15 18:20</td><td>川麻</td><td style="color:#bbb;">-</td><td><span class="rank-1">1位</span> <span class="positive">+40</span></td><td><span class="rank-2">2位</span> <span class="positive">+11</span></td><td><span class="rank-4">4位</span> <span class="negative">-48</span></td><td><span class="rank-3">3位</span> <span class="negative">-3</span></td></tr><tr><td>14</td><td style="white-space:nowrap;">2026-05-17 00:20</td><td>川麻</td><td><span class="rank-2">2位</span> <span class="positive">0</span></td><td><span class="rank-1">1位</span> <span class="positive">+8</span></td><td><span class="rank-4">4位</span> <span class="negative">-6</span></td><td><span class="rank-3">3位</span> <span class="negative">-2</span></td><td style="color:#bbb;">-</td></tr></tbody></table></div></div></div><div id="tab-Jamie" class="tab-content"><div id="player-filter-Jamie"><div class="type-filter-bar"><span style="font-weight:600;">🎲 麻将种类筛选 (多选):</span><div class="filter-group"><label class="filter-check" style="background:#2e7d32; color:white">
+              <input type="checkbox" value="川麻" checked=""> 川麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="敲麻"> 敲麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="烟麻"> 烟麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="日麻"> 日麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="友谊赛"> 友谊赛
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="线下赛"> 线下赛
+            </label><button class="filter-reset" id="resetTypeFilterBtn">全选所有种类</button></div></div></div><h2>Jamie 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">18.2%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">9.1%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">27.3%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">45.5%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">11</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">-10.36</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">3.00</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter" data-player-container="Jamie"><span>📊 显示场次：</span><button class="filter-btn" data-player="Jamie" data-limit="10">最近10战</button><button class="filter-btn" data-player="Jamie" data-limit="20">最近20战</button><button class="filter-btn" data-player="Jamie" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart_Jamie" style="width:100%; height:100%;"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart_Jamie" style="width:100%; height:100%;"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>麻将种类</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>1</td><td>2026-04-30 23:31:48</td><td>川麻</td><td class="negative">-13</td><td class="rank-3">3位</td></tr><tr><td>2</td><td>2026-05-01 00:00:00</td><td>川麻</td><td class="negative">-29</td><td class="rank-4">4位</td></tr><tr><td>3</td><td>2026-05-11 00:13:04</td><td>川麻</td><td class="negative">-49</td><td class="rank-4">4位</td></tr><tr><td>4</td><td>2026-05-12 23:53</td><td>川麻</td><td class="negative">-1</td><td class="rank-3">3位</td></tr><tr><td>5</td><td>2026-05-13 13:05</td><td>川麻</td><td class="positive">+42</td><td class="rank-1">1位</td></tr><tr><td>6</td><td>2026-05-13 13:36</td><td>川麻</td><td class="negative">-35</td><td class="rank-4">4位</td></tr><tr><td>7</td><td>2026-05-14 14:45</td><td>川麻</td><td class="negative">-52</td><td class="rank-4">4位</td></tr><tr><td>8</td><td>2026-05-15 14:12</td><td>川麻</td><td class="positive">+22</td><td class="rank-1">1位</td></tr><tr><td>9</td><td>2026-05-15 14:12</td><td>川麻</td><td class="negative">-4</td><td class="rank-3">3位</td></tr><tr><td>10</td><td>2026-05-15 18:20</td><td>川麻</td><td class="positive">+11</td><td class="rank-2">2位</td></tr><tr><td>11</td><td>2026-05-17 00:20</td><td>川麻</td><td class="negative">-6</td><td class="rank-4">4位</td></tr></tbody></table></div></div></div><div id="tab-_E7_B1_B3_E5_8F_AF_E5_84_BF" class="tab-content"><div id="player-filter-%E7%B1%B3%E5%8F%AF%E5%84%BF"><div class="type-filter-bar"><span style="font-weight:600;">🎲 麻将种类筛选 (多选):</span><div class="filter-group"><label class="filter-check" style="background:#2e7d32; color:white">
+              <input type="checkbox" value="川麻" checked=""> 川麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="敲麻"> 敲麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="烟麻"> 烟麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="日麻"> 日麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="友谊赛"> 友谊赛
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="线下赛"> 线下赛
+            </label><button class="filter-reset" id="resetTypeFilterBtn">全选所有种类</button></div></div></div><h2>米可儿 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">0.0%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">33.3%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">41.7%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">25.0%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">12</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">-14.25</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">2.92</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter" data-player-container="米可儿"><span>📊 显示场次：</span><button class="filter-btn" data-player="米可儿" data-limit="10">最近10战</button><button class="filter-btn" data-player="米可儿" data-limit="20">最近20战</button><button class="filter-btn" data-player="米可儿" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart__E7_B1_B3_E5_8F_AF_E5_84_BF" style="width:100%; height:100%;"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart__E7_B1_B3_E5_8F_AF_E5_84_BF" style="width:100%; height:100%;"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>麻将种类</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>1</td><td>2026-04-30 23:31:48</td><td>川麻</td><td class="positive">+19</td><td class="rank-2">2位</td></tr><tr><td>2</td><td>2026-05-01 00:00:00</td><td>川麻</td><td class="positive">+9</td><td class="rank-2">2位</td></tr><tr><td>3</td><td>2026-05-08 12:53:26</td><td>川麻</td><td class="negative">-7</td><td class="rank-3">3位</td></tr><tr><td>4</td><td>2026-05-08 13:24:58</td><td>川麻</td><td class="positive">+3</td><td class="rank-2">2位</td></tr><tr><td>5</td><td>2026-05-11 00:13:04</td><td>川麻</td><td class="negative">-22</td><td class="rank-2">2位</td></tr><tr><td>6</td><td>2026-05-12 23:53</td><td>川麻</td><td class="negative">-56</td><td class="rank-4">4位</td></tr><tr><td>7</td><td>2026-05-14 14:45</td><td>川麻</td><td class="negative">-26</td><td class="rank-3">3位</td></tr><tr><td>8</td><td>2026-05-15 00:00</td><td>川麻</td><td class="negative">-12</td><td class="rank-3">3位</td></tr><tr><td>9</td><td>2026-05-15 14:12</td><td>川麻</td><td class="negative">-5</td><td class="rank-3">3位</td></tr><tr><td>10</td><td>2026-05-15 14:12</td><td>川麻</td><td class="negative">-24</td><td class="rank-4">4位</td></tr><tr><td>11</td><td>2026-05-15 18:20</td><td>川麻</td><td class="negative">-48</td><td class="rank-4">4位</td></tr><tr><td>12</td><td>2026-05-17 00:20</td><td>川麻</td><td class="negative">-2</td><td class="rank-3">3位</td></tr></tbody></table></div></div></div><div id="tab-_E8_8D_89_E9_87_87_E5_B0_B1_E6_98_AF_E8_8F_9C" class="tab-content"><div id="player-filter-%E8%8D%89%E9%87%87%E5%B0%B1%E6%98%AF%E8%8F%9C"><div class="type-filter-bar"><span style="font-weight:600;">🎲 麻将种类筛选 (多选):</span><div class="filter-group"><label class="filter-check" style="background:#2e7d32; color:white">
+              <input type="checkbox" value="川麻" checked=""> 川麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="敲麻"> 敲麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="烟麻"> 烟麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="日麻"> 日麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="友谊赛"> 友谊赛
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="线下赛"> 线下赛
+            </label><button class="filter-reset" id="resetTypeFilterBtn">全选所有种类</button></div></div></div><h2>草采就是菜 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">50.0%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">21.4%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">14.3%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">14.3%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">14</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">+14.64</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">1.93</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter" data-player-container="草采就是菜"><span>📊 显示场次：</span><button class="filter-btn" data-player="草采就是菜" data-limit="10">最近10战</button><button class="filter-btn" data-player="草采就是菜" data-limit="20">最近20战</button><button class="filter-btn" data-player="草采就是菜" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart__E8_8D_89_E9_87_87_E5_B0_B1_E6_98_AF_E8_8F_9C" style="width:100%; height:100%;"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart__E8_8D_89_E9_87_87_E5_B0_B1_E6_98_AF_E8_8F_9C" style="width:100%; height:100%;"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>麻将种类</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>1</td><td>2026-04-30 23:31:48</td><td>川麻</td><td class="negative">-28</td><td class="rank-4">4位</td></tr><tr><td>2</td><td>2026-05-01 00:00:00</td><td>川麻</td><td class="positive">+9</td><td class="rank-2">2位</td></tr><tr><td>3</td><td>2026-05-08 12:53:26</td><td>川麻</td><td class="positive">+58</td><td class="rank-1">1位</td></tr><tr><td>4</td><td>2026-05-08 13:24:58</td><td>川麻</td><td class="positive">+37</td><td class="rank-1">1位</td></tr><tr><td>5</td><td>2026-05-11 00:13:04</td><td>川麻</td><td class="negative">-29</td><td class="rank-3">3位</td></tr><tr><td>6</td><td>2026-05-12 23:53</td><td>川麻</td><td class="positive">+52</td><td class="rank-1">1位</td></tr><tr><td>7</td><td>2026-05-13 13:05</td><td>川麻</td><td class="negative">-14</td><td class="rank-3">3位</td></tr><tr><td>8</td><td>2026-05-13 13:36</td><td>川麻</td><td class="positive">+38</td><td class="rank-1">1位</td></tr><tr><td>9</td><td>2026-05-14 14:45</td><td>川麻</td><td class="positive">+68</td><td class="rank-1">1位</td></tr><tr><td>10</td><td>2026-05-15 00:00</td><td>川麻</td><td class="negative">-6</td><td class="rank-2">2位</td></tr><tr><td>11</td><td>2026-05-15 14:12</td><td>川麻</td><td class="negative">-31</td><td class="rank-4">4位</td></tr><tr><td>12</td><td>2026-05-15 14:12</td><td>川麻</td><td class="positive">+3</td><td class="rank-2">2位</td></tr><tr><td>13</td><td>2026-05-15 18:20</td><td>川麻</td><td class="positive">+40</td><td class="rank-1">1位</td></tr><tr><td>14</td><td>2026-05-17 00:20</td><td>川麻</td><td class="positive">+8</td><td class="rank-1">1位</td></tr></tbody></table></div></div></div><div id="tab-_E3_80_82" class="tab-content"><div id="player-filter-%E3%80%82"><div class="type-filter-bar"><span style="font-weight:600;">🎲 麻将种类筛选 (多选):</span><div class="filter-group"><label class="filter-check" style="background:#2e7d32; color:white">
+              <input type="checkbox" value="川麻" checked=""> 川麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="敲麻"> 敲麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="烟麻"> 烟麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="日麻"> 日麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="友谊赛"> 友谊赛
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="线下赛"> 线下赛
+            </label><button class="filter-reset" id="resetTypeFilterBtn">全选所有种类</button></div></div></div><h2>。 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">41.7%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">50.0%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">8.3%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">0.0%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">12</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">+22.50</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">1.67</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter" data-player-container="。"><span>📊 显示场次：</span><button class="filter-btn" data-player="。" data-limit="10">最近10战</button><button class="filter-btn" data-player="。" data-limit="20">最近20战</button><button class="filter-btn" data-player="。" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart__E3_80_82" style="width:100%; height:100%;"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart__E3_80_82" style="width:100%; height:100%;"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>麻将种类</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>1</td><td>2026-04-30 23:31:48</td><td>川麻</td><td class="positive">+22</td><td class="rank-1">1位</td></tr><tr><td>2</td><td>2026-05-01 00:00:00</td><td>川麻</td><td class="positive">+11</td><td class="rank-1">1位</td></tr><tr><td>3</td><td>2026-05-08 12:53:26</td><td>川麻</td><td class="positive">+2</td><td class="rank-2">2位</td></tr><tr><td>4</td><td>2026-05-08 13:24:58</td><td>川麻</td><td class="negative">-2</td><td class="rank-3">3位</td></tr><tr><td>5</td><td>2026-05-11 00:13:04</td><td>川麻</td><td class="positive">+100</td><td class="rank-1">1位</td></tr><tr><td>6</td><td>2026-05-12 23:53</td><td>川麻</td><td class="positive">+5</td><td class="rank-2">2位</td></tr><tr><td>7</td><td>2026-05-13 13:05</td><td>川麻</td><td class="negative">-4</td><td class="rank-2">2位</td></tr><tr><td>8</td><td>2026-05-13 13:36</td><td>川麻</td><td class="positive">+10</td><td class="rank-2">2位</td></tr><tr><td>9</td><td>2026-05-15 00:00</td><td>川麻</td><td class="positive">+87</td><td class="rank-1">1位</td></tr><tr><td>10</td><td>2026-05-15 14:12</td><td>川麻</td><td class="positive">+14</td><td class="rank-2">2位</td></tr><tr><td>11</td><td>2026-05-15 14:12</td><td>川麻</td><td class="positive">+25</td><td class="rank-1">1位</td></tr><tr><td>12</td><td>2026-05-17 00:20</td><td>川麻</td><td class="positive">0</td><td class="rank-2">2位</td></tr></tbody></table></div></div></div><div id="tab-Shirley" class="tab-content"><div id="player-filter-Shirley"><div class="type-filter-bar"><span style="font-weight:600;">🎲 麻将种类筛选 (多选):</span><div class="filter-group"><label class="filter-check" style="background:#2e7d32; color:white">
+              <input type="checkbox" value="川麻" checked=""> 川麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="敲麻"> 敲麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="烟麻"> 烟麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="日麻"> 日麻
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="友谊赛"> 友谊赛
+            </label><label class="filter-check" style="background:#f0f0f0; color:#333">
+              <input type="checkbox" value="线下赛"> 线下赛
+            </label><button class="filter-reset" id="resetTypeFilterBtn">全选所有种类</button></div></div></div><h2>Shirley 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">0.0%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">14.3%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">28.6%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">57.1%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">7</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">-27.14</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">3.43</div><div class="stat-label">平均顺位</div></div></div><div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter" data-player-container="Shirley"><span>📊 显示场次：</span><button class="filter-btn" data-player="Shirley" data-limit="10">最近10战</button><button class="filter-btn" data-player="Shirley" data-limit="20">最近20战</button><button class="filter-btn" data-player="Shirley" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="rankchart_Shirley" style="width:100%; height:100%;"></canvas></div></div><div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="chart_Shirley" style="width:100%; height:100%;"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>麻将种类</th><th>得分</th><th>顺位</th></tr></thead><tbody><tr><td>1</td><td>2026-05-08 12:53:26</td><td>川麻</td><td class="negative">-53</td><td class="rank-4">4位</td></tr><tr><td>2</td><td>2026-05-08 13:24:58</td><td>川麻</td><td class="negative">-38</td><td class="rank-4">4位</td></tr><tr><td>3</td><td>2026-05-13 13:05</td><td>川麻</td><td class="negative">-24</td><td class="rank-4">4位</td></tr><tr><td>4</td><td>2026-05-13 13:36</td><td>川麻</td><td class="negative">-13</td><td class="rank-3">3位</td></tr><tr><td>5</td><td>2026-05-14 14:45</td><td>川麻</td><td class="positive">+10</td><td class="rank-2">2位</td></tr><tr><td>6</td><td>2026-05-15 00:00</td><td>川麻</td><td class="negative">-69</td><td class="rank-4">4位</td></tr><tr><td>7</td><td>2026-05-15 18:20</td><td>川麻</td><td class="negative">-3</td><td class="rank-3">3位</td></tr></tbody></table></div></div></div><div id="tab-add" class="tab-content active"><h2>➕ 添加新对局 &amp; 💾 备份快照</h2><div class="card"><div class="input-group"><label>📅 对局日期时间</label><input type="datetime-local" id="game-date"></div><div class="input-group"><label>🀄️ 对局麻将种类</label><select id="game-type-select"><option value="川麻">川麻</option><option value="敲麻">敲麻</option><option value="烟麻">烟麻</option><option value="日麻">日麻</option><option value="友谊赛">友谊赛</option><option value="线下赛">线下赛</option></select></div><h3 style="margin-top:16px;margin-bottom:12px;">🀄 玩家得分 (四人局)</h3><div class="form-row"><div class="input-group"><label>玩家1 姓名</label><select id="player-1-name"><option value="">请选择</option><option value="Jamie">Jamie</option><option value="米可儿">米可儿</option><option value="草采就是菜">草采就是菜</option><option value="。">。</option><option value="Shirley">Shirley</option><option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家1 得分</label><input type="number" id="player-1-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-1-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-1-name" placeholder="输入新玩家昵称"></div><div class="form-row"><div class="input-group"><label>玩家2 姓名</label><select id="player-2-name"><option value="">请选择</option><option value="Jamie">Jamie</option><option value="米可儿">米可儿</option><option value="草采就是菜">草采就是菜</option><option value="。">。</option><option value="Shirley">Shirley</option><option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家2 得分</label><input type="number" id="player-2-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-2-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-2-name" placeholder="输入新玩家昵称"></div><div class="form-row"><div class="input-group"><label>玩家3 姓名</label><select id="player-3-name"><option value="">请选择</option><option value="Jamie">Jamie</option><option value="米可儿">米可儿</option><option value="草采就是菜">草采就是菜</option><option value="。">。</option><option value="Shirley">Shirley</option><option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家3 得分</label><input type="number" id="player-3-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-3-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-3-name" placeholder="输入新玩家昵称"></div><div class="form-row"><div class="input-group"><label>玩家4 姓名</label><select id="player-4-name"><option value="">请选择</option><option value="Jamie">Jamie</option><option value="米可儿">米可儿</option><option value="草采就是菜">草采就是菜</option><option value="。">。</option><option value="Shirley">Shirley</option><option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家4 得分</label><input type="number" id="player-4-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-4-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-4-name" placeholder="输入新玩家昵称"></div><div style="margin-top:16px;"><button class="btn" id="addGameBtn">✅ 添加对局</button></div></div><div class="card"><h3>💾 数据持久化 &amp; 自动保存</h3><div class="tip">✨ 新增对局后，点击下方「💾 一键保存为HTML快照」即可将当前所有数据导出。</div><div class="action-buttons"><button class="btn" id="exportJsonBtn">📤 导出 JSON</button><button class="btn btn-secondary" id="importTriggerBtn">📥 导入 JSON</button><button class="btn btn-save" id="saveSnapshotBtn">💾 一键保存为HTML快照</button></div><input type="file" id="import-file" accept=".json" style="display:none;"></div><div class="card" id="mahjong-type-manager-container"><h3>📚 可配置麻将种类库 <span style="font-size:14px;">(增删改即影响骰子池)</span></h3><div class="type-list" id="mahjongTypeList"><div class="type-item"><span class="type-name">🀄️ 川麻</span><div class="type-actions"><button class="edit-btn" data-edit-idx="0">✏️ 编辑</button><button class="del-btn" data-del-idx="0">🗑️ 删除</button></div></div><div class="type-item"><span class="type-name">🀄️ 敲麻</span><div class="type-actions"><button class="edit-btn" data-edit-idx="1">✏️ 编辑</button><button class="del-btn" data-del-idx="1">🗑️ 删除</button></div></div><div class="type-item"><span class="type-name">🀄️ 烟麻</span><div class="type-actions"><button class="edit-btn" data-edit-idx="2">✏️ 编辑</button><button class="del-btn" data-del-idx="2">🗑️ 删除</button></div></div><div class="type-item"><span class="type-name">🀄️ 日麻</span><div class="type-actions"><button class="edit-btn" data-edit-idx="3">✏️ 编辑</button><button class="del-btn" data-del-idx="3">🗑️ 删除</button></div></div><div class="type-item"><span class="type-name">🀄️ 友谊赛</span><div class="type-actions"><button class="edit-btn" data-edit-idx="4">✏️ 编辑</button><button class="del-btn" data-del-idx="4">🗑️ 删除</button></div></div><div class="type-item"><span class="type-name">🀄️ 线下赛</span><div class="type-actions"><button class="edit-btn" data-edit-idx="5">✏️ 编辑</button><button class="del-btn" data-del-idx="5">🗑️ 删除</button></div></div></div><div class="add-type-form"><h4>➕ 新增麻将种类</h4><div class="form-row" style="grid-template-columns:1fr 1fr;"><div class="input-group"><label>种类名</label><input type="text" id="newTypeName" placeholder="例: 广东麻将"></div><div class="input-group"><label>建议大小(底/番)</label><input type="text" id="newTypeStake" placeholder="例: 小注10元 大注30元"></div></div><div class="input-group"><label>核心规则</label><textarea id="newTypeRules" rows="2" placeholder="详细规则描述"></textarea></div><div class="input-group"><label>建议玩法</label><textarea id="newTypeSuggestion" rows="2" placeholder="玩法/技巧/策略"></textarea></div><button class="btn" id="addMahjongTypeBtn">✅ 添加种类</button></div></div></div></div>
+<footer style="text-align:center;padding:16px;color:#888;font-size:13px;">© 2026 HLG Meeting Analysis · 麻将种类筛选 · 多维度统计</footer>
 
 <script>
-// ---------- 原有麻将数据逻辑 (完全保留) ----------
+// ======================= 原始数据（已将指定对局调整为“敲麻”） =======================
 let games = [
   {
     "date": "2026-04-23 23:12:53",
@@ -373,7 +460,8 @@ let games = [
       "米可儿": 18,
       "草采就是菜": -33,
       "。": 13
-    }
+    },
+    "gameType": "敲麻"
   },
   {
     "date": "2026-04-29 13:09:47",
@@ -382,7 +470,8 @@ let games = [
       "草采就是菜": 13,
       "Jamie": -56,
       "Shirley": -32
-    }
+    },
+    "gameType": "敲麻"
   },
   {
     "date": "2026-04-30 23:31:48",
@@ -391,7 +480,8 @@ let games = [
       "草采就是菜": -28,
       "Jamie": -13,
       "米可儿": 19
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-01 00:00:00",
@@ -400,7 +490,8 @@ let games = [
       "Jamie": -29,
       "米可儿": 9,
       "草采就是菜": 9
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-08 12:53:26",
@@ -409,7 +500,8 @@ let games = [
       "Shirley": -53,
       "米可儿": -7,
       "草采就是菜": 58
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-08 13:24:58",
@@ -418,7 +510,8 @@ let games = [
       "Shirley": -38,
       "草采就是菜": 37,
       "米可儿": 3
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-09 00:27:51",
@@ -427,7 +520,8 @@ let games = [
       "。": -19,
       "草采就是菜": -6,
       "米可儿": 28
-    }
+    },
+    "gameType": "敲麻"
   },
   {
     "date": "2026-05-09 13:14:49",
@@ -436,7 +530,8 @@ let games = [
       "草采就是菜": 146,
       "米可儿": -95,
       "。": -20
-    }
+    },
+    "gameType": "敲麻"
   },
   {
     "date": "2026-05-11 00:13:04",
@@ -445,7 +540,8 @@ let games = [
       "草采就是菜": -29,
       "米可儿": -22,
       "Jamie": -49
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-12 23:53",
@@ -454,7 +550,8 @@ let games = [
       "草采就是菜": 52,
       "米可儿": -56,
       "Jamie": -1
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-13 12:34",
@@ -463,7 +560,8 @@ let games = [
       "草采就是菜": -3,
       "Shirley": 84,
       "Jamie": -23
-    }
+    },
+    "gameType": "敲麻"
   },
   {
     "date": "2026-05-13 13:05",
@@ -472,7 +570,8 @@ let games = [
       "Shirley": -24,
       "草采就是菜": -14,
       "Jamie": 42
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-13 13:36",
@@ -481,7 +580,8 @@ let games = [
       "Shirley": -13,
       "Jamie": -35,
       "草采就是菜": 38
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-14 14:39",
@@ -490,7 +590,8 @@ let games = [
       "草采就是菜": 17,
       "米可儿": -44,
       "Shirley": -74
-    }
+    },
+    "gameType": "敲麻"
   },
   {
     "date": "2026-05-14 14:45",
@@ -499,7 +600,8 @@ let games = [
       "米可儿": -26,
       "草采就是菜": 68,
       "Shirley": 10
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-15 00:00",
@@ -508,7 +610,8 @@ let games = [
       "米可儿": -12,
       "草采就是菜": -6,
       "Shirley": -69
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-15 14:12",
@@ -517,7 +620,8 @@ let games = [
       "草采就是菜": -31,
       "Jamie": 22,
       "米可儿": -5
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-15 14:12",
@@ -526,7 +630,8 @@ let games = [
       "Jamie": -4,
       "米可儿": -24,
       "草采就是菜": 3
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-15 18:20",
@@ -535,7 +640,8 @@ let games = [
       "Shirley": -3,
       "米可儿": -48,
       "草采就是菜": 40
-    }
+    },
+    "gameType": "川麻"
   },
   {
     "date": "2026-05-17 00:20",
@@ -544,52 +650,50 @@ let games = [
       "。": 0,
       "草采就是菜": 8,
       "米可儿": -2
-    }
+    },
+    "gameType": "川麻"
   }
 ];
 
-window.playerCharts = {};
-window.rankCharts = {};
-
-function getAllPlayers(games) { const set = new Set(); games.forEach(g => Object.keys(g.scores).forEach(p => set.add(p))); return Array.from(set); }
-function getRanks(scores) { const entries = Object.entries(scores); entries.sort((a,b)=>b[1]-a[1]); let ranks={}, cr=1; for(let i=0;i<entries.length;i++){ if(i>0 && entries[i][1]!==entries[i-1][1]) cr=i+1; ranks[entries[i][0]]=cr; } return ranks; }
-function calculateStats(games) { const players=getAllPlayers(games); const stats={}; players.forEach(p=>{ stats[p]={games:0,totalScore:0,ranks:[0,0,0,0],rankSum:0,scoreHistory:[],rankHistory:[],dateHistory:[]}; }); games.forEach(game=>{ const ranks=getRanks(game.scores); Object.entries(game.scores).forEach(([player,score])=>{ const s=stats[player]; s.games++; s.totalScore+=score; s.ranks[ranks[player]-1]++; s.rankSum+=ranks[player]; s.scoreHistory.push(score); s.rankHistory.push(ranks[player]); s.dateHistory.push(game.date); }); }); players.forEach(p=>{ const s=stats[p]; s.avgScore=s.games>0?(s.totalScore/s.games).toFixed(2):"0.00"; s.avgRank=s.games>0?(s.rankSum/s.games).toFixed(2):"0.00"; s.firstRate=s.games>0?((s.ranks[0]/s.games)*100).toFixed(1):"0.0"; s.secondRate=s.games>0?((s.ranks[1]/s.games)*100).toFixed(1):"0.0"; s.thirdRate=s.games>0?((s.ranks[2]/s.games)*100).toFixed(1):"0.0"; s.fourthRate=s.games>0?((s.ranks[3]/s.games)*100).toFixed(1):"0.0"; }); return stats; }
-function calculateH2H(games){ const players=getAllPlayers(games); const h2h={}; players.forEach(p1=>{ h2h[p1]={}; players.forEach(p2=>{ if(p1!==p2) h2h[p1][p2]={win:0,loss:0,total:0}; }); }); games.forEach(game=>{ const ranks=getRanks(game.scores); const present=Object.keys(game.scores); for(let i=0;i<present.length;i++){ for(let j=i+1;j<present.length;j++){ const a=present[i],b=present[j]; if(ranks[a]<ranks[b]){ h2h[a][b].win++; h2h[b][a].loss++; } else { h2h[a][b].loss++; h2h[b][a].win++; } h2h[a][b].total++; h2h[b][a].total++; } } }); return h2h; }
-
-const rankCrownPlugin = { id: 'rankCrownMarker', afterDatasetsDraw(chart) { const { ctx, data, chartArea, scales } = chart; const meta = chart.getDatasetMeta(0); if (!meta?.data) return; const rankValues = chart.data.datasets[0].data; meta.data.forEach((point, index) => { if (rankValues[index] === 1) { ctx.save(); ctx.font = 'bold 22px "Segoe UI Emoji", "Apple Color Emoji", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('👑', point.x, point.y - 16); ctx.restore(); } }); } };
-function renderRankChart(player, limit = 10) { 
-  const stats = calculateStats(games); const s = stats[player]; if (!s || s.games === 0) return; let rankHistory = [...s.rankHistory]; let totalGames = rankHistory.length; let startIdx = 0; if (limit && limit > 0 && totalGames > limit) startIdx = totalGames - limit; const subsetRanks = rankHistory.slice(startIdx); const labels = subsetRanks.map((_, idx) => `第${startIdx + idx + 1}局`); const chartId = `rankchart_${encodeURIComponent(player).replace(/%/g, '_')}`; const canvas = document.getElementById(chartId); if (!canvas) return; if (window.rankCharts[player]) window.rankCharts[player].destroy(); const ctx = canvas.getContext('2d'); window.rankCharts[player] = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ label: '顺位', data: subsetRanks, borderColor: '#555', backgroundColor: 'rgba(85,85,85,0.05)', fill: true, tension: 0.2, pointRadius: 6, pointHoverRadius: 9, pointBackgroundColor: subsetRanks.map(v => v === 1 ? '#ff9800' : '#888'), pointBorderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => `顺位: ${ctx.raw}位` } } }, scales: { y: { reverse: true, min: 1, max: 4, ticks: { stepSize: 1, autoSkip: false, callback: (val) => { if (val === 1) return '一位'; if (val === 2) return '二位'; if (val === 3) return '三位'; if (val === 4) return '四位'; return ''; }, font: { size: 12 }, color: '#2c3e2f' }, grid: { color: '#e0e0e0' } } }, layout: { padding: { top: 28, bottom: 20, left: 6, right: 6 } } }, plugins: [rankCrownPlugin] }); }
-function renderPlayer(player) { 
-  const stats = calculateStats(games); const s = stats[player]; const tabId = `tab-${encodeURIComponent(player).replace(/%/g, '_')}`; const chartId = `chart_${encodeURIComponent(player).replace(/%/g, '_')}`; const rankChartId = `rankchart_${encodeURIComponent(player).replace(/%/g, '_')}`; let html = `<h2>${player} 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">${s.firstRate}%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">${s.secondRate}%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">${s.thirdRate}%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">${s.fourthRate}%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">${s.games}</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">${parseFloat(s.avgScore) > 0 ? '+' : ''}${s.avgScore}</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">${s.avgRank}</div><div class="stat-label">平均顺位</div></div></div>`;
-  html += `<div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter"><span>📊 显示场次：</span><button class="filter-btn" data-player="${player.replace(/"/g, '&quot;')}" data-limit="10">最近10战</button><button class="filter-btn" data-player="${player.replace(/"/g, '&quot;')}" data-limit="20">最近20战</button><button class="filter-btn" data-player="${player.replace(/"/g, '&quot;')}" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="${rankChartId}" style="width:100%; height:100%;"></canvas></div></div>`;
-  html += `<div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="${chartId}" style="width:100%; height:100%;"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>得分</th><th>顺位</th></tr></thead><tbody>`;
-  games.forEach((game, idx) => { if (game.scores[player] !== undefined) { const ranks = getRanks(game.scores); const score = game.scores[player]; const rank = ranks[player]; let crownMark = score > 100 ? ' <span class="crown">👑</span>' : ''; html += `<tr><td>第${idx+1}局</td><td>${game.date}</td><td class="${score>=0?'positive':'negative'}">${score>0?'+':''}${score}${crownMark}</td><td class="rank-${rank}">${rank}位</td></tr>`; } });
-  html += `</tbody></table></div></div>`; document.getElementById(tabId).innerHTML = html;
-  setTimeout(() => { const sdata = calculateStats(games)[player]; const canvas = document.getElementById(chartId); if(canvas){ if(window.playerCharts[player]) window.playerCharts[player].destroy(); const ctx = canvas.getContext('2d'); window.playerCharts[player] = new Chart(ctx, { type: 'line', data: { labels: sdata.scoreHistory.map((_,i)=>`第${i+1}局`), datasets: [{ label: '得分', data: sdata.scoreHistory, borderColor: '#2e7d32', backgroundColor: 'rgba(46,125,50,0.08)', fill: true, tension: 0.3, pointRadius: 6, pointHoverRadius: 9, pointBackgroundColor: sdata.scoreHistory.map(v=>v>100?'#ff9800':'#2e7d32'), pointBorderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } }); } renderRankChart(player, 10); document.querySelectorAll(`.filter-btn[data-player="${player.replace(/"/g, '&quot;')}"]`).forEach(btn => { btn.addEventListener('click', (e) => { const limit = parseInt(btn.dataset.limit, 10); document.querySelectorAll(`.filter-btn[data-player="${player.replace(/"/g, '&quot;')}"]`).forEach(b => b.classList.remove('active-filter')); btn.classList.add('active-filter'); renderRankChart(player, limit); }); if(btn.dataset.limit === '10') btn.classList.add('active-filter'); }); }, 20);
-}
-function renderSummary() { 
-  const stats = calculateStats(games); const players=getAllPlayers(games); const totalGames=games.length; const overallRank=[...players].sort((a,b)=>{ const ra=parseFloat(stats[a].avgRank),rb=parseFloat(stats[b].avgRank); if(ra!==rb) return ra-rb; return parseFloat(stats[b].firstRate)-parseFloat(stats[a].firstRate); }); const scoreRank=[...players].sort((a,b)=>stats[b].totalScore-stats[a].totalScore);
-  let html='<h2>🎯 HLG Meeting Analysis </h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">'+totalGames+'</div><div class="stat-label">总对局数</div></div><div class="stat-card"><div class="stat-value">'+players.length+'</div><div class="stat-label">参与人数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">'+overallRank[0]+'</div><div class="stat-label">平均顺位第一</div></div></div><div class="card"><h3>🏆 综合排名（按平均顺位）</h3><div class="scroll-x"><table><thead><tr><th>排名</th><th>玩家</th><th>局数</th><th>平均顺位</th><th>一位率</th><th>二位率</th><th>三位率</th><th>四位率</th><th>总分</th></tr></thead><tbody>';
-  overallRank.forEach((p,i)=>{ const s=stats[p]; html+=`<tr><td class="rank-${i+1}">${i+1}</td><td><strong>${p}</strong></td><td>${s.games}</td><td>${s.avgRank}</td><td class="rank-1">${s.firstRate}%</td><td class="rank-2">${s.secondRate}%</td><td class="rank-3">${s.thirdRate}%</td><td class="rank-4">${s.fourthRate}%</td><td class="${s.totalScore>=0?'positive':'negative'}">${s.totalScore>0?'+':''}${s.totalScore}</td></tr>`; });
-  html+='</tbody></table></div></div><div class="card"><h3>💰 总分排名</h3><div class="scroll-x"><table><thead><tr><th>排名</th><th>玩家</th><th>总分</th><th>平均得分</th></tr></thead><tbody>';
-  scoreRank.forEach((p,i)=>{ const s=stats[p]; html+=`<tr><td class="rank-${i+1}">${i+1}</td><td><strong>${p}</strong></td><td class="${s.totalScore>=0?'positive':'negative'}">${s.totalScore>0?'+':''}${s.totalScore}</td><td>${parseFloat(s.avgScore)>0?'+':''}${s.avgScore}</td></tr>`; });
-  html+='</tbody></table></div></div><div class="card"><h3>⚔️ 相互战绩（胜-负，同场竞技）</h3><div class="scroll-x"><table><thead><tr><th></th>'+players.map(p=>`<th>${p}</th>`).join('')+'</tr></thead><tbody>';
-  players.forEach(p1=>{ html+=`<tr><th>${p1}</th>`; players.forEach(p2=>{ if(p1===p2) html+='<td style="background:#f5f5f5;">-</td>'; else { const rec=calculateH2H(games)[p1]?.[p2]; html+=`<td>${rec?`<span class="h2h-win">${rec.win}</span>-<span class="h2h-loss">${rec.loss}</span>`:'N/A'}</td>`; } }); html+='</tr>'; });
-  html+='</tbody></table></div></div><div class="card"><h3>📜 对局历史</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th>'+players.map(p=>`<th>${p}</th>`).join('')+'</tr></thead><tbody>';
-  games.forEach((game,idx)=>{ const ranks=getRanks(game.scores); html+=`<tr><td>第${idx+1}局</td><td style="white-space:nowrap;">${game.date}</td>`; players.forEach(p=>{ if(game.scores[p]!==undefined){ const sc=game.scores[p]; html+=`<td><span class="rank-${ranks[p]}">${ranks[p]}位</span> <span class="${sc>=0?'positive':'negative'}">${sc>0?'+':''}${sc}</span></td>`; } else html+='<td style="color:#bbb;">-</td>'; }); html+='</tr>'; });
-  html+='</tbody></table></div></div>'; document.getElementById('tab-summary').innerHTML = html;
-}
-
-// ---------- 麻将掷骰 & 规则配置模块 (UI拆分：chooser只保留掷骰+规则面板；种类库整合到add页面) ----------
+// 麻将种类库 + 筛选器全局状态
 let mahjongConfig = [];
+let currentTypeFilters = new Set();       
+let activeTabId = 'summary';              
+
+// 全局存储图表实例
+window.playerCharts = window.playerCharts || {};
+window.rankCharts = window.rankCharts || {};
+
+function getAllPlayersFromGames(gameList) { const set = new Set(); gameList.forEach(g => Object.keys(g.scores).forEach(p => set.add(p))); return Array.from(set); }
+function getRanks(scores) { const entries = Object.entries(scores); entries.sort((a,b)=>b[1]-a[1]); let ranks={}, cr=1; for(let i=0;i<entries.length;i++){ if(i>0 && entries[i][1]!==entries[i-1][1]) cr=i+1; ranks[entries[i][0]]=cr; } return ranks; }
+
+function calculateStatsFromGames(gameList) {
+  const players = getAllPlayersFromGames(gameList);
+  const stats = {};
+  players.forEach(p=>{ stats[p]={games:0,totalScore:0,ranks:[0,0,0,0],rankSum:0,scoreHistory:[],rankHistory:[],dateHistory:[]}; });
+  gameList.forEach(game=>{ const ranks=getRanks(game.scores); Object.entries(game.scores).forEach(([player,score])=>{ const s=stats[player]; s.games++; s.totalScore+=score; s.ranks[ranks[player]-1]++; s.rankSum+=ranks[player]; s.scoreHistory.push(score); s.rankHistory.push(ranks[player]); s.dateHistory.push(game.date); }); });
+  players.forEach(p=>{ const s=stats[p]; s.avgScore=s.games>0?(s.totalScore/s.games).toFixed(2):"0.00"; s.avgRank=s.games>0?(s.rankSum/s.games).toFixed(2):"0.00"; s.firstRate=s.games>0?((s.ranks[0]/s.games)*100).toFixed(1):"0.0"; s.secondRate=s.games>0?((s.ranks[1]/s.games)*100).toFixed(1):"0.0"; s.thirdRate=s.games>0?((s.ranks[2]/s.games)*100).toFixed(1):"0.0"; s.fourthRate=s.games>0?((s.ranks[3]/s.games)*100).toFixed(1):"0.0"; });
+  return stats;
+}
+function calculateH2HFromGames(gameList){
+  const players=getAllPlayersFromGames(gameList);
+  const h2h={};
+  players.forEach(p1=>{ h2h[p1]={}; players.forEach(p2=>{ if(p1!==p2) h2h[p1][p2]={win:0,loss:0,total:0}; }); });
+  gameList.forEach(game=>{ const ranks=getRanks(game.scores); const present=Object.keys(game.scores); for(let i=0;i<present.length;i++){ for(let j=i+1;j<present.length;j++){ const a=present[i],b=present[j]; if(ranks[a]<ranks[b]){ h2h[a][b].win++; h2h[b][a].loss++; } else { h2h[a][b].loss++; h2h[b][a].win++; } h2h[a][b].total++; h2h[b][a].total++; } } });
+  return h2h;
+}
+
+function getFilteredGames() {
+  if (!mahjongConfig.length) return games.slice();
+  if (currentTypeFilters.size === 0) return games.slice();
+  return games.filter(g => g.gameType && currentTypeFilters.has(g.gameType));
+}
+
 const STORAGE_KEY = 'hlg_mahjong_dice_config';
 let currentSelectedMahjong = null;   
-let rollTimeout = null;
 function loadMahjongConfig() {
   const stored = localStorage.getItem(STORAGE_KEY);
-  if(stored) {
-    try { mahjongConfig = JSON.parse(stored); } catch(e){ mahjongConfig = null; }
-  }
+  if(stored) { try { mahjongConfig = JSON.parse(stored); } catch(e){ mahjongConfig = null; } }
   if(!mahjongConfig || !mahjongConfig.length) {
     mahjongConfig = [
       { name: "川麻", rules: "血战到底，缺一门方可胡牌，刮风下雨，查叫查花猪。", suggestion: "建议做大牌，防守查叫，注重换牌策略。", stake: "小注: 2分/番  大注: 5分/番 (自摸加底)" },
@@ -597,213 +701,198 @@ function loadMahjongConfig() {
     ];
   }
   if(!currentSelectedMahjong && mahjongConfig.length) currentSelectedMahjong = mahjongConfig[0];
+  const defaultTypeName = mahjongConfig[0]?.name || "川麻";
+  games.forEach(g => { if(!g.gameType) g.gameType = defaultTypeName; });
 }
 function saveMahjongConfig() { localStorage.setItem(STORAGE_KEY, JSON.stringify(mahjongConfig)); }
 function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m;}); }
 
-// 刷新规则目录面板（仅显示当前选中的麻将规则）
 function refreshRulePanel() {
   const panel = document.getElementById('ruleDirectoryPanel');
   if(!panel) return;
-  if(!mahjongConfig.length) {
-    panel.innerHTML = `<h3>📖 规则目录 & 建议</h3><div class="tip">暂无麻将种类，请先在「添加对局」页面配置。</div>`;
-    return;
-  }
+  if(!mahjongConfig.length) { panel.innerHTML = `<h3>📖 规则目录 & 建议</h3><div class="tip">暂无麻将种类，请先在「添加对局」页面配置。</div>`; return; }
   const target = currentSelectedMahjong || mahjongConfig[0];
-  if(target) {
-    panel.innerHTML = `<h3>📖 规则目录 & 建议</h3>
-      <div class="rule-preview">
-        <h3 style="margin-bottom: 8px;">🎋 ${escapeHtml(target.name)} 规则书</h3>
-        <p><strong>📜 核心规则：</strong> ${escapeHtml(target.rules)}</p>
-        <p><strong>🎯 建议玩法：</strong> ${escapeHtml(target.suggestion)}</p>
-        <p><strong>💰 推荐大小：</strong> ${escapeHtml(target.stake)}</p>
-      </div>`;
-  } else {
-    panel.innerHTML = `<h3>📖 规则目录 & 建议</h3><div class="tip">请添加麻将种类</div>`;
+  if(target) { panel.innerHTML = `<h3>📖 规则目录 & 建议</h3><div class="rule-preview"><h3 style="margin-bottom: 8px;">🎋 ${escapeHtml(target.name)} 规则书</h3><p><strong>📜 核心规则：</strong> ${escapeHtml(target.rules)}</p><p><strong>🎯 建议玩法：</strong> ${escapeHtml(target.suggestion)}</p><p><strong>💰 推荐大小：</strong> ${escapeHtml(target.stake)}</p></div>`; }
+  else { panel.innerHTML = `<h3>📖 规则目录 & 建议</h3><div class="tip">请添加麻将种类</div>`; }
+}
+
+// 核心修复：针对单个玩家独立绘制图表（仅在tab可见时调用）
+function drawSinglePlayerCharts(playerName, filteredGames, limit = 10) {
+  const statsAll = calculateStatsFromGames(filteredGames);
+  const s = statsAll[playerName];
+  if (!s) return;
+  const chartId = `chart_${encodeURIComponent(playerName).replace(/%/g, '_')}`;
+  const rankChartId = `rankchart_${encodeURIComponent(playerName).replace(/%/g, '_')}`;
+  const canvasScore = document.getElementById(chartId);
+  const canvasRank = document.getElementById(rankChartId);
+  if (!canvasScore || !canvasRank) return;
+  // 销毁旧图表
+  if (window.playerCharts[playerName]) { window.playerCharts[playerName].destroy(); delete window.playerCharts[playerName]; }
+  if (window.rankCharts[playerName]) { window.rankCharts[playerName].destroy(); delete window.rankCharts[playerName]; }
+  // 得分走势
+  const ctxScore = canvasScore.getContext('2d');
+  window.playerCharts[playerName] = new Chart(ctxScore, { type: 'line', data: { labels: s.scoreHistory.map((_,i)=>`第${i+1}局`), datasets: [{ label: '得分', data: s.scoreHistory, borderColor: '#2e7d32', backgroundColor: 'rgba(46,125,50,0.08)', fill: true, tension: 0.3, pointRadius: 6, pointHoverRadius: 9, pointBackgroundColor: s.scoreHistory.map(v=>v>100?'#ff9800':'#2e7d32'), pointBorderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+  // 顺位趋势
+  let rankHistory = [...s.rankHistory];
+  let total = rankHistory.length;
+  let start = (limit && total > limit) ? total - limit : 0;
+  const subRanks = rankHistory.slice(start);
+  const labelsRank = subRanks.map((_, idx) => `第${start + idx + 1}局`);
+  const ctxRank = canvasRank.getContext('2d');
+  const rankCrownPlugin = { id: 'rankCrownMarker', afterDatasetsDraw(chart) { const { ctx } = chart; const meta = chart.getDatasetMeta(0); if (!meta?.data) return; const rankValues = chart.data.datasets[0].data; meta.data.forEach((point, index) => { if (rankValues[index] === 1) { ctx.save(); ctx.font = 'bold 22px "Segoe UI Emoji", "Apple Color Emoji", sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'bottom'; ctx.fillText('👑', point.x, point.y - 16); ctx.restore(); } }); } };
+  window.rankCharts[playerName] = new Chart(ctxRank, { type: 'line', data: { labels: labelsRank, datasets: [{ label: '顺位', data: subRanks, borderColor: '#555', backgroundColor: 'rgba(85,85,85,0.05)', fill: true, tension: 0.2, pointRadius: 6, pointHoverRadius: 9, pointBackgroundColor: subRanks.map(v => v === 1 ? '#ff9800' : '#888'), pointBorderColor: '#fff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: (ctx) => `顺位: ${ctx.raw}位` } } }, scales: { y: { reverse: true, min: 1, max: 4, ticks: { stepSize: 1, autoSkip: false, callback: (val) => { if (val === 1) return '一位'; if (val === 2) return '二位'; if (val === 3) return '三位'; if (val === 4) return '四位'; return ''; }, font: { size: 12 }, color: '#2c3e2f' }, grid: { color: '#e0e0e0' } } }, layout: { padding: { top: 28, bottom: 20, left: 6, right: 6 } } }, plugins: [rankCrownPlugin] });
+  // 重新绑定顺位趋势按钮
+  const rankFilterDiv = document.querySelector(`.rank-filter[data-player-container="${playerName}"]`);
+  if(rankFilterDiv) {
+    const btns = rankFilterDiv.querySelectorAll('.filter-btn');
+    btns.forEach(btn => {
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      newBtn.addEventListener('click', (e) => {
+        const limitVal = parseInt(newBtn.dataset.limit, 10);
+        btns.forEach(b => b.classList.remove('active-filter'));
+        newBtn.classList.add('active-filter');
+        drawSinglePlayerCharts(playerName, filteredGames, limitVal);
+      });
+      if(newBtn.dataset.limit == limit) newBtn.classList.add('active-filter');
+    });
   }
 }
 
-// 渲染「可配置麻将种类库」完整UI (用于add页面内部容器)
-function renderTypeManagerIntoContainer(containerId) {
+// 确保当前显示的玩家（若为个人面板）重新绘制图表
+function refreshCurrentPlayerCharts() {
+  if(activeTabId === 'chooser' || activeTabId === 'summary' || activeTabId === 'add') return;
+  const playerName = activeTabId;
+  const filtered = getFilteredGames();
+  drawSinglePlayerCharts(playerName, filtered, 10);
+}
+
+function refreshAllDashboard() {
+  const filtered = getFilteredGames();
+  renderSummary();
+  const players = getAllPlayersFromGames(filtered);
+  players.forEach(p => renderPlayer(p, filtered));
+  renderChooserTab();    
+  renderAddGame();       
+  // 重新绘制当前激活玩家的图表（确保可见面板图表正常）
+  refreshCurrentPlayerCharts();
+  const activeBtn = document.querySelector(`nav button[data-tab="${activeTabId}"]`);
+  if(activeBtn) activeBtn.click();
+  else showTab('summary');
+}
+
+function renderTypeFilter(containerId) {
   const container = document.getElementById(containerId);
   if(!container) return;
-  let typesHtml = '';
-  mahjongConfig.forEach((type, idx) => {
-    typesHtml += `<div class="type-item">
-      <span class="type-name">🀄️ ${escapeHtml(type.name)}</span>
-      <div class="type-actions">
-        <button class="edit-btn" data-edit-idx="${idx}">✏️ 编辑</button>
-        <button class="del-btn" data-del-idx="${idx}">🗑️ 删除</button>
-      </div>
-    </div>`;
+  if(!mahjongConfig.length) { container.innerHTML = `<div class="type-filter-bar">暂无种类，请先添加</div>`; return; }
+  let html = `<div class="type-filter-bar"><span style="font-weight:600;">🎲 麻将种类筛选 (多选):</span><div class="filter-group">`;
+  mahjongConfig.forEach(t => {
+    const isChecked = currentTypeFilters.has(t.name);
+    html += `<label class="filter-check" style="background:${isChecked ? '#2e7d32' : '#f0f0f0'}; color:${isChecked ? 'white' : '#333'}">
+              <input type="checkbox" value="${escapeHtml(t.name)}" ${isChecked ? 'checked' : ''}> ${escapeHtml(t.name)}
+            </label>`;
   });
-  const html = `<h3>📚 可配置麻将种类库 <span style="font-size:14px;">(增删改即影响骰子池)</span></h3>
-    <div class="type-list" id="mahjongTypeList">${typesHtml || '<p>暂无种类，请添加</p>'}</div>
-    <div class="add-type-form">
-      <h4>➕ 新增麻将种类</h4>
-      <div class="form-row" style="grid-template-columns:1fr 1fr;"><div class="input-group"><label>种类名</label><input type="text" id="newTypeName" placeholder="例: 广东麻将"></div><div class="input-group"><label>建议大小(底/番)</label><input type="text" id="newTypeStake" placeholder="例: 小注10元 大注30元"></div></div>
-      <div class="input-group"><label>核心规则</label><textarea id="newTypeRules" rows="2" placeholder="详细规则描述"></textarea></div>
-      <div class="input-group"><label>建议玩法</label><textarea id="newTypeSuggestion" rows="2" placeholder="玩法/技巧/策略"></textarea></div>
-      <button class="btn" id="addMahjongTypeBtn" style="margin-top:6px">✅ 添加种类</button>
-    </div>`;
+  html += `<button class="filter-reset" id="resetTypeFilterBtn">全选所有种类</button></div></div>`;
   container.innerHTML = html;
-  // 绑定事件
-  document.getElementById('addMahjongTypeBtn')?.addEventListener('click', () => addMahjongTypeFromManager());
-  document.querySelectorAll('#mahjongTypeList .edit-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => { const idx = btn.getAttribute('data-edit-idx'); if(idx!==null) editMahjongType(parseInt(idx)); });
+  container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const val = cb.value;
+      if(cb.checked) currentTypeFilters.add(val);
+      else currentTypeFilters.delete(val);
+      refreshAllDashboard();
+    });
   });
-  document.querySelectorAll('#mahjongTypeList .del-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => { const idx = btn.getAttribute('data-del-idx'); if(idx!==null) deleteMahjongType(parseInt(idx)); });
+  const resetBtn = document.getElementById('resetTypeFilterBtn');
+  if(resetBtn) resetBtn.addEventListener('click', () => {
+    currentTypeFilters.clear();
+    mahjongConfig.forEach(t => currentTypeFilters.add(t.name));
+    refreshAllDashboard();
   });
 }
 
-// 全局刷新种类管理区 和 规则面板
-function refreshAllMahjongUI() {
-  const managerContainer = document.getElementById('mahjong-type-manager-container');
-  if(managerContainer) renderTypeManagerIntoContainer('mahjong-type-manager-container');
-  refreshRulePanel();
-  // 如果当前没有选中种类且列表非空，默认选中第一个
-  if(!currentSelectedMahjong && mahjongConfig.length) currentSelectedMahjong = mahjongConfig[0];
-  if(currentSelectedMahjong && !mahjongConfig.some(t => t.name === currentSelectedMahjong.name)) {
-    currentSelectedMahjong = mahjongConfig[0] || null;
+function renderSummary() {
+  const filteredGames = getFilteredGames();
+  const stats = calculateStatsFromGames(filteredGames);
+  const players = getAllPlayersFromGames(filteredGames);
+  const totalGames = filteredGames.length;
+  const overallRank = [...players].sort((a,b)=>{ const ra=parseFloat(stats[a].avgRank),rb=parseFloat(stats[b].avgRank); if(ra!==rb) return ra-rb; return parseFloat(stats[b].firstRate)-parseFloat(stats[a].firstRate); });
+  const scoreRank = [...players].sort((a,b)=>stats[b].totalScore-stats[a].totalScore);
+  let html = `<h2>🎯 HLG Meeting Highlights</h2><div class="stats-grid"><div class="stat-card"><div class="stat-value">${totalGames}</div><div class="stat-label">筛选对局数</div></div><div class="stat-card"><div class="stat-value">${players.length}</div><div class="stat-label">参与人数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">${overallRank[0]||'-'}</div><div class="stat-label">平均顺位第一</div></div></div>`;
+  html += `<div class="card"><h3>🏆 综合排名（按平均顺位）</h3><div class="scroll-x"><table><thead><tr><th>排名</th><th>玩家</th><th>局数</th><th>平均顺位</th><th>一位率</th><th>二位率</th><th>三位率</th><th>四位率</th><th>总分</th></tr></thead><tbody>`;
+  overallRank.forEach((p,i)=>{ const s=stats[p]; html+=`<tr><td class="rank-${i+1}">${i+1}</td><td><strong>${p}</strong></td><td>${s.games}</td><td>${s.avgRank}</td><td class="rank-1">${s.firstRate}%</td><td class="rank-2">${s.secondRate}%</td><td class="rank-3">${s.thirdRate}%</td><td class="rank-4">${s.fourthRate}%</td><td class="${s.totalScore>=0?'positive':'negative'}">${s.totalScore>0?'+':''}${s.totalScore}</td>`; });
+  html+=`</tbody></table></div></div><div class="card"><h3>💰 总分排名</h3><div class="scroll-x"><table><thead><tr><th>排名</th><th>玩家</th><th>总分</th><th>平均得分</th></tr></thead><tbody>`;
+  scoreRank.forEach((p,i)=>{ const s=stats[p]; html+=`<tr><td class="rank-${i+1}">${i+1}</td><td><strong>${p}</strong></td><td class="${s.totalScore>=0?'positive':'negative'}">${s.totalScore>0?'+':''}${s.totalScore}</td><td>${parseFloat(s.avgScore)>0?'+':''}${s.avgScore}</td>`; });
+  html+=`</tbody></table></div></div><div class="card"><h3>⚔️ 相互战绩（胜-负，同场竞技）</h3><div class="scroll-x"><table><thead><tr><th></th>${players.map(p=>`<th>${p}</th>`).join('')}</tr></thead><tbody>`;
+  const h2h = calculateH2HFromGames(filteredGames);
+  players.forEach(p1=>{ html+=`<tr><th>${p1}</th>`; players.forEach(p2=>{ if(p1===p2) html+='<td style="background:#f5f5f5;">-</td>'; else { const rec=h2h[p1]?.[p2]; html+=`<td>${rec?`<span class="h2h-win">${rec.win}</span>-<span class="h2h-loss">${rec.loss}</span>`:'N/A'}</td>`; } }); html+='</td>'; });
+  html+=`</tbody></table></div></div><div class="card"><h3>📜 对局历史</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>麻将类型</th>${players.map(p=>`<th>${p}</th>`).join('')} </thead><tbody>`;
+  filteredGames.forEach((game,idx)=>{ const ranks=getRanks(game.scores); html+=`<tr><td>${idx+1}</td><td style="white-space:nowrap;">${game.date}</td><td>${game.gameType || '未分类'}</td>`; players.forEach(p=>{ if(game.scores[p]!==undefined){ const sc=game.scores[p]; html+=`<td><span class="rank-${ranks[p]}">${ranks[p]}位</span> <span class="${sc>=0?'positive':'negative'}">${sc>0?'+':''}${sc}</span></td>`; } else html+='<td style="color:#bbb;">-</td>'; }); html+='</tr>'; });
+  html+=`</tbody></table></div></div>`;
+  document.getElementById('tab-summary').innerHTML = `<div id="summary-filter-container"></div>${html}`;
+  renderTypeFilter('summary-filter-container');
+}
+
+function renderPlayer(player, filteredGames) {
+  const stats = calculateStatsFromGames(filteredGames);
+  const s = stats[player];
+  if (!s) { 
+    document.getElementById(`tab-${encodeURIComponent(player).replace(/%/g, '_')}`).innerHTML = `<div class="card">暂无该玩家数据</div>`; 
+    return;
   }
-  refreshRulePanel();
+  const tabId = `tab-${encodeURIComponent(player).replace(/%/g, '_')}`;
+  const chartId = `chart_${encodeURIComponent(player).replace(/%/g, '_')}`;
+  const rankChartId = `rankchart_${encodeURIComponent(player).replace(/%/g, '_')}`;
+  const filterContainerId = `player-filter-${encodeURIComponent(player)}`;
+  let html = `<div id="${filterContainerId}"></div><h2>${player} 📈 个人数据面板</h2><div class="stats-grid"><div class="stat-card" style="background:linear-gradient(135deg,#43a047,#2e7d32)"><div class="stat-value">${s.firstRate}%</div><div class="stat-label">一位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#1e88e5,#1565c0)"><div class="stat-value">${s.secondRate}%</div><div class="stat-label">二位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">${s.thirdRate}%</div><div class="stat-label">三位率</div></div><div class="stat-card" style="background:linear-gradient(135deg,#e53935,#c62828)"><div class="stat-value">${s.fourthRate}%</div><div class="stat-label">四位率</div></div></div><div class="stats-grid" style="grid-template-columns:repeat(3,1fr);"><div class="stat-card" style="background:linear-gradient(135deg,#ff9800,#e65100)"><div class="stat-value">${s.games}</div><div class="stat-label">总局数</div></div><div class="stat-card" style="background:linear-gradient(135deg,#8e24aa,#6a1b9a)"><div class="stat-value">${parseFloat(s.avgScore) > 0 ? '+' : ''}${s.avgScore}</div><div class="stat-label">平均得分</div></div><div class="stat-card" style="background:linear-gradient(135deg,#00acc1,#00838f)"><div class="stat-value">${s.avgRank}</div><div class="stat-label">平均顺位</div></div></div>`;
+  html += `<div class="card"><h3>🎢 最近顺位趋势</h3><div class="rank-filter" data-player-container="${player}"><span>📊 显示场次：</span><button class="filter-btn" data-player="${player.replace(/"/g, '&quot;')}" data-limit="10">最近10战</button><button class="filter-btn" data-player="${player.replace(/"/g, '&quot;')}" data-limit="20">最近20战</button><button class="filter-btn" data-player="${player.replace(/"/g, '&quot;')}" data-limit="30">最近30战</button></div><div class="chart-container"><canvas id="${rankChartId}" style="width:100%; height:100%;"></canvas></div></div>`;
+  html += `<div class="card"><h3>📊 得分走势</h3><div class="chart-container"><canvas id="${chartId}" style="width:100%; height:100%;"></canvas></div><p style="text-align:center;color:#666;font-size:13px;margin-top:8px;"><span class="crown">👑</span> 表示单局得分超过100分</p></div><div class="card"><h3>📋 对局明细</h3><div class="scroll-x"><table><thead><tr><th>局次</th><th>日期</th><th>麻将种类</th><th>得分</th><th>顺位</th></tr></thead><tbody>`;
+  const playerGames = filteredGames.filter(g => g.scores[player] !== undefined);
+  playerGames.forEach((game, idx) => { const ranks = getRanks(game.scores); const score = game.scores[player]; const rank = ranks[player]; let crownMark = score > 100 ? ' <span class="crown">👑</span>' : ''; html += `<tr><td>${idx+1}</td><td>${game.date}</td><td>${game.gameType || '-'}</td><td class="${score>=0?'positive':'negative'}">${score>0?'+':''}${score}${crownMark}</td><td class="rank-${rank}">${rank}位</td>`; });
+  html += `</tbody></table></div></div>`;
+  document.getElementById(tabId).innerHTML = html;
+  const filterContainer = document.getElementById(filterContainerId);
+  if(filterContainer) renderTypeFilter(filterContainerId);
 }
 
-function addMahjongTypeFromManager() {
-  const name = document.getElementById('newTypeName')?.value.trim();
-  const rules = document.getElementById('newTypeRules')?.value.trim();
-  const suggestion = document.getElementById('newTypeSuggestion')?.value.trim();
-  const stake = document.getElementById('newTypeStake')?.value.trim();
-  if(!name) { alert('请输入麻将种类名'); return; }
-  mahjongConfig.push({ name, rules: rules || "自定义规则，可后续编辑", suggestion: suggestion || "随心而打，享受对局", stake: stake || "默认半庄 5/10元" });
-  saveMahjongConfig();
-  if(!currentSelectedMahjong) currentSelectedMahjong = mahjongConfig[0];
-  refreshAllMahjongUI();
-}
-
-function deleteMahjongType(idx) {
-  if(mahjongConfig.length <= 1) { alert("至少需要保留一种麻将种类"); return; }
-  if(confirm(`确定删除「${mahjongConfig[idx].name}」吗？`)) {
-    mahjongConfig.splice(idx,1);
-    saveMahjongConfig();
-    if(currentSelectedMahjong && !mahjongConfig.some(t => t.name === currentSelectedMahjong.name)) {
-      currentSelectedMahjong = mahjongConfig[0] || null;
-    }
-    refreshAllMahjongUI();
-  }
-}
-
-function editMahjongType(idx) {
-  const type = mahjongConfig[idx];
-  const newName = prompt("编辑麻将种类名称", type.name);
-  if(newName !== null && newName.trim()) type.name = newName.trim();
-  const newRules = prompt("编辑核心规则", type.rules);
-  if(newRules !== null) type.rules = newRules.trim() || type.rules;
-  const newSugg = prompt("编辑建议玩法", type.suggestion);
-  if(newSugg !== null) type.suggestion = newSugg.trim() || type.suggestion;
-  const newStake = prompt("编辑推荐大小（例：小注5元 大注10元）", type.stake);
-  if(newStake !== null) type.stake = newStake.trim() || type.stake;
-  saveMahjongConfig();
-  if(currentSelectedMahjong && currentSelectedMahjong.name === type.name) currentSelectedMahjong = type;
-  refreshAllMahjongUI();
-}
-
-function rollDiceAction() {
-  if(!mahjongConfig.length) { alert('请至少配置一种麻将种类后才能掷骰'); return; }
-  const btn = document.getElementById('rollDiceBtn');
-  const resultDiv = document.getElementById('diceResultArea');
-  const diceIcon = document.getElementById('diceAnimateIcon');
-  if(rollTimeout) clearTimeout(rollTimeout);
-  btn.disabled = true;
-  resultDiv.innerHTML = "🎲 天意侵蚀中 🎲";
-  diceIcon.style.transform = "rotate(20deg)";
-  let rollCount = 0;
-  const interval = setInterval(() => {
-    diceIcon.innerText = ["🎲","🎯","🀄️","🍀"][rollCount % 4];
-    rollCount++;
-  }, 300);
-  rollTimeout = setTimeout(() => {
-    clearInterval(interval);
-    diceIcon.style.transform = "";
-    diceIcon.innerText = "🎲";
-    const randomIndex = Math.floor(Math.random() * mahjongConfig.length);
-    const selected = { ...mahjongConfig[randomIndex] };
-    currentSelectedMahjong = selected;
-    resultDiv.innerHTML = `✨ 结果：${escapeHtml(selected.name)} ✨`;
-    refreshRulePanel();
-    btn.disabled = false;
-    rollTimeout = null;
-  }, 3000);
-}
-
-// 重构chooser页面：只保留掷骰区域 + 规则目录，主题居中
 function renderChooserTab() {
   const container = document.getElementById('tab-chooser');
   if(!container) return;
-  const html = `
-    <h2 style="text-align:center;">🎲 是啊，打什么呢？</h2>
-    <div class="card dice-area">
-      <div class="dice-icon" id="diceAnimateIcon">🎲</div>
-      <div style="text-align:center;"><button class="btn" id="rollDiceBtn" style="font-size: 1.2rem; padding: 10px 28px;">🎯 掷骰子</button></div>
-      <div id="diceResultArea" class="roll-result" style="min-width: 160px; text-align:center;">✨ 天意酝酿中 ✨</div>
-      <div class="tip" style="margin-top:12px">⏱️ 风从虎，云从龙，龙湖英雄傲苍穹！</div>
-    </div>
-    <div class="card" id="ruleDirectoryPanel">
-      <h3>📖 规则目录 & 建议</h3>
-      <div class="tip">加载中...</div>
-    </div>
-  `;
-  container.innerHTML = html;
+  container.innerHTML = `<h2 style="text-align:center;">🎲 是啊，打什么呢？</h2><div class="card dice-area"><div class="dice-icon" id="diceAnimateIcon">🎲</div><div style="text-align:center;"><button class="btn" id="rollDiceBtn" style="font-size: 1.2rem; padding: 10px 28px;">🎯 掷骰子</button></div><div id="diceResultArea" class="roll-result" style="min-width: 160px; text-align:center;">✨ 天意酝酿中 ✨</div><div class="tip" style="margin-top:12px">⏱️ 风从虎，云从龙，龙湖英雄傲苍穹！</div></div><div class="card" id="ruleDirectoryPanel"><h3>📖 规则目录 & 建议</h3><div class="tip">加载中...</div></div>`;
   document.getElementById('rollDiceBtn')?.addEventListener('click', rollDiceAction);
   refreshRulePanel();
 }
-
-// 添加对局页面扩充：原有表单 + 备份 + 可配置麻将种类库
-function renderAddGame() {
-  const players=getAllPlayers(games); 
-  let html='<h2>➕ 添加新对局 &amp; 💾 备份快照</h2><div class="card"><div class="input-group"><label>📅 对局日期时间</label><input type="datetime-local" id="game-date"></div><h3 style="margin-top:16px;margin-bottom:12px;">🀄 玩家得分 (四人局)</h3>';
+function rollDiceAction() { if(!mahjongConfig.length) { alert('请至少配置一种麻将种类后才能掷骰'); return; } const btn = document.getElementById('rollDiceBtn'); const resultDiv = document.getElementById('diceResultArea'); const diceIcon = document.getElementById('diceAnimateIcon'); if(window.rollTimeout) clearTimeout(window.rollTimeout); btn.disabled = true; resultDiv.innerHTML = "🎲 天意侵蚀中 🎲"; diceIcon.style.transform = "rotate(20deg)"; let rollCount = 0; const interval = setInterval(() => { diceIcon.innerText = ["🎲","🎯","🀄️","🍀"][rollCount % 4]; rollCount++; }, 300); window.rollTimeout = setTimeout(() => { clearInterval(interval); diceIcon.style.transform = ""; diceIcon.innerText = "🎲"; const randomIndex = Math.floor(Math.random() * mahjongConfig.length); const selected = { ...mahjongConfig[randomIndex] }; currentSelectedMahjong = selected; resultDiv.innerHTML = `✨ 结果：${escapeHtml(selected.name)} ✨`; refreshRulePanel(); btn.disabled = false; window.rollTimeout = null; }, 3000); }
+function renderAddGame() { 
+  const players=getAllPlayersFromGames(games);
+  let html='<h2>➕ 添加新对局 &amp; 💾 备份快照</h2><div class="card"><div class="input-group"><label>📅 对局日期时间</label><input type="datetime-local" id="game-date"></div><div class="input-group"><label>🀄️ 对局麻将种类</label><select id="game-type-select">'+mahjongConfig.map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join('')+'</select></div><h3 style="margin-top:16px;margin-bottom:12px;">🀄 玩家得分 (四人局)</h3>';
   for(let i=1;i<=4;i++){ html+=`<div class="form-row"><div class="input-group"><label>玩家${i} 姓名</label><select id="player-${i}-name"><option value="">请选择</option>${players.map(p=>`<option value="${p.replace(/"/g,'&quot;')}">${p}</option>`).join('')}<option value="__new__">✨ + 新玩家</option></select></div><div class="input-group"><label>玩家${i} 得分</label><input type="number" id="player-${i}-score" placeholder="输入得分"></div></div><div class="input-group" id="new-player-${i}-group" style="display:none;"><label>✨ 新玩家姓名</label><input type="text" id="new-player-${i}-name" placeholder="输入新玩家昵称"></div>`; }
-  html+=`<div style="margin-top:16px;"><button class="btn" onclick="window.addGame()">✅ 添加对局</button></div></div><div class="card"><h3>💾 数据持久化 &amp; 自动保存</h3><div class="tip">✨ 新增对局后，点击下方「💾 一键保存为HTML快照」即可将当前所有数据导出。</div><div class="action-buttons"><button class="btn" onclick="window.exportData()">📤 导出 JSON</button><button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 导入 JSON</button><button class="btn btn-save" onclick="window.saveAsHtmlSnapshot()">💾 一键保存为HTML快照</button></div><input type="file" id="import-file" accept=".json" style="display:none;" onchange="window.importData(this)"></div>`;
-  html += `<div class="card" id="mahjong-type-manager-container"><div class="tip">加载种类库...</div></div>`;
+  html+=`<div style="margin-top:16px;"><button class="btn" id="addGameBtn">✅ 添加对局</button></div></div><div class="card"><h3>💾 数据持久化 &amp; 自动保存</h3><div class="tip">✨ 新增对局后，点击下方「💾 一键保存为HTML快照」即可将当前所有数据导出。</div><div class="action-buttons"><button class="btn" id="exportJsonBtn">📤 导出 JSON</button><button class="btn btn-secondary" id="importTriggerBtn">📥 导入 JSON</button><button class="btn btn-save" id="saveSnapshotBtn">💾 一键保存为HTML快照</button></div><input type="file" id="import-file" accept=".json" style="display:none;"></div><div class="card" id="mahjong-type-manager-container"><div class="tip">加载种类库...</div></div>`;
   document.getElementById('tab-add').innerHTML = html;
   const now=new Date(); const offset=now.getTimezoneOffset()*60000; const localIso=new Date(now.getTime()-offset).toISOString().slice(0,16);
   const dateInput=document.getElementById('game-date'); if(dateInput) dateInput.value=localIso;
   for(let i=1;i<=4;i++){ const sel=document.getElementById(`player-${i}-name`); if(sel) sel.addEventListener('change',function(){ const group=document.getElementById(`new-player-${i}-group`); if(group) group.style.display=this.value==='__new__'?'block':'none'; }); }
+  document.getElementById('addGameBtn')?.addEventListener('click', () => { const date=document.getElementById('game-date').value; if(!date){ alert('请选择日期'); return; } const scores={}; const used=new Set(); const gameType = document.getElementById('game-type-select').value; for(let i=1;i<=4;i++){ let name=document.getElementById(`player-${i}-name`).value; const scoreInput=document.getElementById(`player-${i}-score`).value; if(name==='__new__') name=document.getElementById(`new-player-${i}-name`).value.trim(); const score=parseFloat(scoreInput); if(!name||scoreInput===''||isNaN(score)){ alert(`玩家${i}信息不完整`); return; } if(used.has(name)){ alert(`玩家${name}重复`); return; } used.add(name); scores[name]=score; } games.push({date:date.replace('T',' '), scores, gameType}); init(); showTab('summary'); alert('✅ 对局添加成功！'); });
+  document.getElementById('exportJsonBtn')?.addEventListener('click', () => { const dataStr=JSON.stringify(games,null,2); const blob=new Blob([dataStr],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`mahjong-data-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(url); });
+  document.getElementById('importTriggerBtn')?.addEventListener('click', () => document.getElementById('import-file').click());
+  document.getElementById('saveSnapshotBtn')?.addEventListener('click', () => { const doctype='<!DOCTYPE html>\n'; const originalHtml=document.documentElement.outerHTML; const currentGamesJson=JSON.stringify(games,null,2); const regex=/(let\s+games\s*=\s*)(\[[\s\S]*?\])(\s*;)/; let newHtml=originalHtml.replace(regex,(match,prefix,arrayContent,suffix)=>prefix+currentGamesJson+suffix); if(newHtml===originalHtml){ newHtml=originalHtml.replace(/(let\s+games\s*=\s*)\[[\s\S]*?\];/,`let games = ${currentGamesJson};`); } const timestamp=new Date().toISOString().slice(0,19).replace(/:/g,'-'); const filename=`麻将数据快照_${timestamp}.html`; const blob=new Blob([newHtml],{type:'text/html;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); alert(`快照已保存: ${filename}`); });
+  document.getElementById('import-file')?.addEventListener('change', (e) => { const file=e.target.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=ev=>{ try{ const data=JSON.parse(ev.target.result); if(!Array.isArray(data)) throw new Error('格式错误'); games=data; init(); showTab('summary'); alert('导入成功'); }catch(err){ alert('导入失败'); } }; reader.readAsText(file); e.target.value=''; });
   renderTypeManagerIntoContainer('mahjong-type-manager-container');
 }
+function renderTypeManagerIntoContainer(containerId) { 
+  const container = document.getElementById(containerId); if(!container) return;
+  let typesHtml = ''; mahjongConfig.forEach((type, idx) => { typesHtml += `<div class="type-item"><span class="type-name">🀄️ ${escapeHtml(type.name)}</span><div class="type-actions"><button class="edit-btn" data-edit-idx="${idx}">✏️ 编辑</button><button class="del-btn" data-del-idx="${idx}">🗑️ 删除</button></div></div>`; });
+  const html = `<h3>📚 可配置麻将种类库 <span style="font-size:14px;">(增删改即影响骰子池)</span></h3><div class="type-list" id="mahjongTypeList">${typesHtml || '<p>暂无种类，请添加</p>'}</div><div class="add-type-form"><h4>➕ 新增麻将种类</h4><div class="form-row" style="grid-template-columns:1fr 1fr;"><div class="input-group"><label>种类名</label><input type="text" id="newTypeName" placeholder="例: 广东麻将"></div><div class="input-group"><label>建议大小(底/番)</label><input type="text" id="newTypeStake" placeholder="例: 小注10元 大注30元"></div></div><div class="input-group"><label>核心规则</label><textarea id="newTypeRules" rows="2" placeholder="详细规则描述"></textarea></div><div class="input-group"><label>建议玩法</label><textarea id="newTypeSuggestion" rows="2" placeholder="玩法/技巧/策略"></textarea></div><button class="btn" id="addMahjongTypeBtn">✅ 添加种类</button></div>`;
+  container.innerHTML = html;
+  document.getElementById('addMahjongTypeBtn')?.addEventListener('click', () => { const name=document.getElementById('newTypeName')?.value.trim(); if(!name){ alert('请输入麻将种类名'); return; } mahjongConfig.push({ name, rules: document.getElementById('newTypeRules')?.value.trim() || "自定义规则", suggestion: document.getElementById('newTypeSuggestion')?.value.trim() || "随心而打", stake: document.getElementById('newTypeStake')?.value.trim() || "默认半庄 5/10元" }); saveMahjongConfig(); if(!currentSelectedMahjong) currentSelectedMahjong = mahjongConfig[0]; refreshAllMahjongUI(); });
+  document.querySelectorAll('#mahjongTypeList .edit-btn').forEach(btn => { btn.addEventListener('click', (e) => { const idx = parseInt(btn.getAttribute('data-edit-idx')); if(!isNaN(idx)) editMahjongType(idx); }); });
+  document.querySelectorAll('#mahjongTypeList .del-btn').forEach(btn => { btn.addEventListener('click', (e) => { const idx = parseInt(btn.getAttribute('data-del-idx')); if(!isNaN(idx)) deleteMahjongType(idx); }); });
+}
+function deleteMahjongType(idx) { if(mahjongConfig.length <= 1){ alert("至少需要保留一种麻将种类"); return; } if(confirm(`确定删除「${mahjongConfig[idx].name}」吗？`)) { mahjongConfig.splice(idx,1); saveMahjongConfig(); if(currentSelectedMahjong && !mahjongConfig.some(t => t.name === currentSelectedMahjong.name)) currentSelectedMahjong = mahjongConfig[0] || null; refreshAllMahjongUI(); } }
+function editMahjongType(idx) { const type = mahjongConfig[idx]; const newName = prompt("编辑麻将种类名称", type.name); if(newName && newName.trim()) type.name = newName.trim(); const newRules = prompt("编辑核心规则", type.rules); if(newRules !== null) type.rules = newRules.trim() || type.rules; const newSugg = prompt("编辑建议玩法", type.suggestion); if(newSugg !== null) type.suggestion = newSugg.trim() || type.suggestion; const newStake = prompt("编辑推荐大小", type.stake); if(newStake !== null) type.stake = newStake.trim() || type.stake; saveMahjongConfig(); if(currentSelectedMahjong && currentSelectedMahjong.name === type.name) currentSelectedMahjong = type; refreshAllMahjongUI(); }
+function refreshAllMahjongUI() { refreshRulePanel(); const managerContainer = document.getElementById('mahjong-type-manager-container'); if(managerContainer) renderTypeManagerIntoContainer('mahjong-type-manager-container'); const addSelect = document.getElementById('game-type-select'); if(addSelect && mahjongConfig.length) { addSelect.innerHTML = mahjongConfig.map(t=>`<option value="${escapeHtml(t.name)}">${escapeHtml(t.name)}</option>`).join(''); } refreshAllDashboard(); }
 
-function addGame() { 
-  const date=document.getElementById('game-date').value; if(!date){ alert('请选择日期'); return; } const scores={}; const used=new Set();
-  for(let i=1;i<=4;i++){ let name=document.getElementById(`player-${i}-name`).value; const scoreInput=document.getElementById(`player-${i}-score`).value; if(name==='__new__') name=document.getElementById(`new-player-${i}-name`).value.trim(); const score=parseFloat(scoreInput); if(!name||scoreInput===''||isNaN(score)){ alert(`玩家${i}信息不完整`); return; } if(used.has(name)){ alert(`玩家${name}重复`); return; } used.add(name); scores[name]=score; }
-  games.push({date:date.replace('T',' '),scores}); init(); showTab('summary'); alert('✅ 对局添加成功！');
-}
-function exportData(){ const dataStr=JSON.stringify(games,null,2); const blob=new Blob([dataStr],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`mahjong-data-${new Date().toISOString().slice(0,10)}.json`; a.click(); URL.revokeObjectURL(url); }
-function importData(input){ const file=input.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=e=>{ try{ const data=JSON.parse(e.target.result); if(!Array.isArray(data)) throw new Error('格式错误'); games=data; init(); showTab('summary'); alert('导入成功'); }catch(err){ alert('导入失败'); } }; reader.readAsText(file); input.value=''; }
-function saveAsHtmlSnapshot(){ const doctype='<!DOCTYPE html>\n'; const originalHtml=document.documentElement.outerHTML; const currentGamesJson=JSON.stringify(games,null,2); const regex=/(let\s+games\s*=\s*)(\[[\s\S]*?\])(\s*;)/; let newHtml=originalHtml.replace(regex,(match,prefix,arrayContent,suffix)=>prefix+currentGamesJson+suffix); if(newHtml===originalHtml){ newHtml=originalHtml.replace(/(let\s+games\s*=\s*)\[[\s\S]*?\];/,`let games = ${currentGamesJson};`); } downloadHtmlBlob(newHtml); }
-function downloadHtmlBlob(htmlString){ const timestamp=new Date().toISOString().slice(0,19).replace(/:/g,'-'); const filename=`麻将数据快照_${timestamp}.html`; const blob=new Blob([htmlString],{type:'text/html;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); alert(`快照已保存: ${filename}`); }
-function showTab(tabName){ document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active')); document.querySelectorAll('nav button').forEach(el=>el.classList.remove('active')); let mappedId = tabName === 'chooser' ? 'tab-chooser' : (tabName === 'summary' ? 'tab-summary' : (tabName === 'add' ? 'tab-add' : `tab-${encodeURIComponent(tabName).replace(/%/g,'_')}`)); const tabEl=document.getElementById(mappedId); if(tabEl) tabEl.classList.add('active'); const btn=document.querySelector(`nav button[data-tab="${tabName.replace(/"/g,'&quot;')}"]`); if(btn) btn.classList.add('active'); }
-function init() {
-  loadMahjongConfig();
-  const players=getAllPlayers(games);
-  const nav = document.getElementById('dynamic-nav');
-  let navHtml = `<button data-tab="chooser" onclick="showTab('chooser')">🎲 是啊，打什么呢？</button>`;
-  navHtml += `<button data-tab="summary" onclick="showTab('summary')">📊 总览</button>`;
-  players.forEach(p=>{ navHtml+=`<button data-tab="${p.replace(/"/g,'&quot;')}" onclick="showTab('${p.replace(/'/g,"\\'")}')">👤 ${p}</button>`; });
-  navHtml+=`<button data-tab="add" onclick="showTab('add')">➕ 添加对局</button><span class="nav-date">📅 数据快照 · ${new Date().toLocaleString()}</span>`;
-  nav.innerHTML = navHtml;
-  const container=document.getElementById('app-container');
-  const MORANDI=['#f5f0eb','#e8ede6','#ede6dc','#e2e8f0','#f0e6ec'];
-  let tabsHtml=`<div id="tab-chooser" class="tab-content" style="background:#fff7e8;"></div><div id="tab-summary" class="tab-content active"></div>`;
-  players.forEach((p,i)=>{ tabsHtml+=`<div id="tab-${encodeURIComponent(p).replace(/%/g,'_')}" class="tab-content" style="background:${MORANDI[i%5]}"></div>`; });
-  tabsHtml+=`<div id="tab-add" class="tab-content"></div>`;
-  container.innerHTML = tabsHtml;
-  renderSummary();
-  players.forEach(p => renderPlayer(p));
-  renderChooserTab();
-  renderAddGame();
-}
-window.showTab = showTab; window.addGame = addGame; window.exportData = exportData; window.importData = importData; window.saveAsHtmlSnapshot = saveAsHtmlSnapshot;
+function init() { loadMahjongConfig(); if(currentTypeFilters.size === 0 && mahjongConfig.length) mahjongConfig.forEach(t => currentTypeFilters.add(t.name)); const players = getAllPlayersFromGames(games); const nav = document.getElementById('dynamic-nav'); let navHtml = `<button data-tab="chooser" onclick="showTab('chooser')">🎲 是啊，打什么呢？</button><button data-tab="summary" onclick="showTab('summary')">📊 总览</button>`; players.forEach(p=>{ navHtml+=`<button data-tab="${p.replace(/"/g,'&quot;')}" onclick="showTab('${p.replace(/'/g,"\\'")}')">👤 ${p}</button>`; }); navHtml+=`<button data-tab="add" onclick="showTab('add')">➕ 添加对局</button><span class="nav-date">📅 数据快照 · ${new Date().toLocaleString()}</span>`; nav.innerHTML = navHtml; const container=document.getElementById('app-container'); let tabsHtml=`<div id="tab-chooser" class="tab-content"></div><div id="tab-summary" class="tab-content"></div>`; players.forEach(p=>{ tabsHtml+=`<div id="tab-${encodeURIComponent(p).replace(/%/g,'_')}" class="tab-content"></div>`; }); tabsHtml+=`<div id="tab-add" class="tab-content"></div>`; container.innerHTML = tabsHtml; refreshAllDashboard(); }
+window.showTab = function(tabName) { activeTabId = tabName; document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active')); document.querySelectorAll('nav button').forEach(el=>el.classList.remove('active')); let mappedId = tabName === 'chooser' ? 'tab-chooser' : (tabName === 'summary' ? 'tab-summary' : (tabName === 'add' ? 'tab-add' : `tab-${encodeURIComponent(tabName).replace(/%/g,'_')}`)); const tabEl=document.getElementById(mappedId); if(tabEl) tabEl.classList.add('active'); const btn=document.querySelector(`nav button[data-tab="${tabName.replace(/"/g,'&quot;')}"]`); if(btn) btn.classList.add('active'); if(tabName !== 'chooser' && tabName !== 'summary' && tabName !== 'add') { refreshCurrentPlayerCharts(); } };
 init();
 </script>
 
